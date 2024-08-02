@@ -92,3 +92,11 @@ class ChatRoomMember {
     this.rueJaiUserType = rueJaiUserType;
   }
 }
+
+export {
+  RoomManagementEvent,
+  CreateRoomEvent,
+  InviteMemberEvent,
+  UpdateMemberRoleEvent,
+  RemoveMemberEvent,
+};
