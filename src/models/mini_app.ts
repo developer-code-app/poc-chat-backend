@@ -1,0 +1,3 @@
+class MiniApp {}
+
+export { MiniApp };
