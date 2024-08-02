@@ -1,3 +1,5 @@
+import { RueJaiUserType } from "../rue_jai_user";
+
 abstract class Event {
   readonly id: number;
   readonly owner: Owner;
@@ -11,10 +13,10 @@ abstract class Event {
 }
 
 class Owner {
-  readonly rueJaiUserId: number;
-  readonly rueJaiUserType: string;
+  readonly rueJaiUserId: string;
+  readonly rueJaiUserType: RueJaiUserType;
 
-  constructor(rueJaiUserId: number, rueJaiUserType: string) {
+  constructor(rueJaiUserId: string, rueJaiUserType: RueJaiUserType) {
     this.rueJaiUserId = rueJaiUserId;
     this.rueJaiUserType = rueJaiUserType;
   }
