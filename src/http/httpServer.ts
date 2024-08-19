@@ -1,7 +1,7 @@
 import express from "express"
 import { createRouter } from "./router"
 
-const PORT = process.env.PORT ?? "3000"
+const HTTP_PORT: string = process.env.HTTP_PORT ?? "3000"
 
 class HttpServer {
   start() {
@@ -14,9 +14,9 @@ class HttpServer {
 
     app.use("/api/ruejai-chat", router)
 
-    app.listen(PORT, () => {
+    app.listen(HTTP_PORT, () => {
       // eslint-disable-next-line no-console
-      console.log(`Server is running on http://localhost:${PORT}`)
+      console.log(`Server is running on http://localhost:${HTTP_PORT}`)
     })
   }
 }
