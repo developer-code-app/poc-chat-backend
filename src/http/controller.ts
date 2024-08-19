@@ -12,6 +12,12 @@ class Controller {
       message: "Get chat room latest event record info",
     })
   }
+
+  getChatRoomEventArchiveUrls = (req: Request, res: Response) => {
+    res.json({
+      message: "Get chat room event archive urls",
+    })
+  }
 }
 
 export { Controller }
