@@ -11,12 +11,12 @@ enum RueJaiUserRole {
 }
 
 class RueJaiUser {
-  readonly id: number;
-  readonly rueJaiUserId: string;
-  readonly rueJaiUserType: RueJaiUserType;
-  readonly rueJaiUserRole: RueJaiUserRole;
-  readonly name: string;
-  readonly thumbnailUrl: string;
+  readonly id: number
+  readonly rueJaiUserId: string
+  readonly rueJaiUserType: RueJaiUserType
+  readonly rueJaiUserRole: RueJaiUserRole
+  readonly name: string
+  readonly thumbnailUrl: string
 
   constructor(
     id: number,
@@ -26,13 +26,13 @@ class RueJaiUser {
     name: string,
     thumbnailUrl: string
   ) {
-    this.id = id;
-    this.rueJaiUserId = rueJaiUserId;
-    this.rueJaiUserType = rueJaiUserType;
-    this.rueJaiUserRole = rueJaiUserRole;
-    this.name = name;
-    this.thumbnailUrl = thumbnailUrl;
+    this.id = id
+    this.rueJaiUserId = rueJaiUserId
+    this.rueJaiUserType = rueJaiUserType
+    this.rueJaiUserRole = rueJaiUserRole
+    this.name = name
+    this.thumbnailUrl = thumbnailUrl
   }
 }
 
-export { RueJaiUser, RueJaiUserType, RueJaiUserRole };
+export { RueJaiUser, RueJaiUserType, RueJaiUserRole }

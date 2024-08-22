@@ -1,4 +1,4 @@
-import { RueJaiUser } from "./rue_jai_user";
+import { RueJaiUser } from "./rue_jai_user"
 
 enum ChatRoomMemberRole {
   ADMIN,
@@ -6,17 +6,17 @@ enum ChatRoomMemberRole {
 }
 
 class ChatRoomMember {
-  readonly id: number;
-  readonly role: ChatRoomMemberRole;
-  readonly rueJaiUser: RueJaiUser;
-  readonly lastReadMessageId: number;
+  readonly id: number
+  readonly role: ChatRoomMemberRole
+  readonly rueJaiUser: RueJaiUser
+  readonly lastReadMessageRecordNumber: number
 
-  constructor(id: number, role: ChatRoomMemberRole, rueJaiUser: RueJaiUser, lastReadMessageId: number) {
-    this.id = id;
-    this.role = role;
-    this.rueJaiUser = rueJaiUser;
-    this.lastReadMessageId = lastReadMessageId;
+  constructor(id: number, role: ChatRoomMemberRole, rueJaiUser: RueJaiUser, lastReadMessageRecordNumber: number) {
+    this.id = id
+    this.role = role
+    this.rueJaiUser = rueJaiUser
+    this.lastReadMessageRecordNumber = lastReadMessageRecordNumber
   }
 }
 
-export { ChatRoomMember, ChatRoomMemberRole };
+export { ChatRoomMember, ChatRoomMemberRole }
