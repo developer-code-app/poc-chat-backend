@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import WebSocket from "ws"
+import { WebSocket } from "ws"
 
 import { WebSocketClient } from "../models/web_socket_client"
 
@@ -12,8 +12,8 @@ class Controller {
     this.client = client
   }
 
-  onMessage(message: string) {
-    console.log(`Received message from ${this.client.toString()}: ${message}`)
+  onMessage(json: unknown) {
+    console.log(`${this.client.toString()}: ${json as string}`)
   }
 
   onClose() {

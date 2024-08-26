@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-useless-constructor */
 import { Event, Owner } from "./event";
 
 abstract class MessageEvent extends Event {
