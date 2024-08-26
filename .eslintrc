@@ -21,6 +21,18 @@
     "no-unneeded-ternary": 2,
     "semi-spacing": 2,
     "no-loop-func": 2,
-    "no-loops/no-loops": 2
+    "no-loops/no-loops": 2,
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "args": "all",
+        "argsIgnorePattern": "^_",
+        "caughtErrors": "all",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ]
   }
 }
