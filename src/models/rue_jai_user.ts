@@ -1,3 +1,6 @@
+import { Expose } from "class-transformer"
+import { IsEnum, IsNumber, IsString } from "class-validator"
+
 enum RueJaiUserType {
   RUE_JAI_ADMIN,
   RUE_JAI_APP_USER,
@@ -11,11 +14,28 @@ enum RueJaiUserRole {
 }
 
 class RueJaiUser {
+  @Expose({ name: "id" })
+  @IsNumber()
   readonly id: number
+
+  @Expose({ name: "rue_jai_user_id" })
+  @IsString()
   readonly rueJaiUserId: string
+
+  @Expose({ name: "rue_jai_user_type" })
+  @IsEnum(RueJaiUserType)
   readonly rueJaiUserType: RueJaiUserType
+
+  @Expose({ name: "rue_jai_user_role" })
+  @IsEnum(RueJaiUserRole)
   readonly rueJaiUserRole: RueJaiUserRole
+
+  @Expose({ name: "name" })
+  @IsString()
   readonly name: string
+
+  @Expose({ name: "thumbnail_url" })
+  @IsString()
   readonly thumbnailUrl: string
 
   constructor(

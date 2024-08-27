@@ -1,8 +1,20 @@
-import { RueJaiUserType } from "../rue_jai_user"
+/* eslint-disable @typescript-eslint/no-wrapper-object-types */
+import { Expose } from "class-transformer"
+import { IsDate, IsInstance, IsNumber } from "class-validator"
+
+import { Owner } from "./owner"
 
 abstract class Event {
+  @Expose({ name: "id" })
+  @IsNumber()
   readonly id: number
+
+  @Expose({ name: "owner" })
+  @IsInstance(Owner)
   readonly owner: Owner
+
+  @Expose({ name: "created_at" })
+  @IsDate()
   readonly createdAt: Date
 
   constructor(id: number, owner: Owner, createdAt: Date) {
@@ -12,14 +24,4 @@ abstract class Event {
   }
 }
 
-class Owner {
-  readonly rueJaiUserId: string
-  readonly rueJaiUserType: RueJaiUserType
-
-  constructor(rueJaiUserId: string, rueJaiUserType: RueJaiUserType) {
-    this.rueJaiUserId = rueJaiUserId
-    this.rueJaiUserType = rueJaiUserType
-  }
-}
-
-export { Event, Owner }
+export { Event }

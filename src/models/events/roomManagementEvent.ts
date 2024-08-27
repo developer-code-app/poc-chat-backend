@@ -1,17 +1,23 @@
-/* eslint-disable @typescript-eslint/no-useless-constructor */
-import { ChatRoomMemberRole } from "../chat_room_member"
-import { RueJaiUserType } from "../rue_jai_user"
-import { Event, Owner } from "./event"
+import { Expose } from "class-transformer"
+import { IsEnum, IsInstance, IsNumber, IsString } from "class-validator"
 
-abstract class RoomManagementEvent extends Event {
-  constructor(id: number, owner: Owner, createdAt: Date) {
-    super(id, owner, createdAt)
-  }
-}
+import { ChatRoomMember, ChatRoomMemberRole } from "../chat_room_member"
+import { Event } from "./event"
+import { Owner } from "./owner"
+
+abstract class RoomManagementEvent extends Event {}
 
 class CreateRoomEvent extends RoomManagementEvent {
+  @Expose({ name: "name" })
+  @IsString()
   readonly name: string
+
+  @Expose({ name: "thumbnail_url" })
+  @IsString()
   readonly thumbnailUrl: string
+
+  @Expose({ name: "members" })
+  @IsInstance(ChatRoomMember, { each: true })
   readonly members: ChatRoomMember[]
 
   constructor(
@@ -31,6 +37,8 @@ class CreateRoomEvent extends RoomManagementEvent {
 }
 
 class InviteMemberEvent extends RoomManagementEvent {
+  @Expose({ name: "member" })
+  @IsInstance(ChatRoomMember)
   readonly member: ChatRoomMember
 
   constructor(id: number, owner: Owner, createdAt: Date, member: ChatRoomMember) {
@@ -41,7 +49,12 @@ class InviteMemberEvent extends RoomManagementEvent {
 }
 
 class UpdateMemberRoleEvent extends RoomManagementEvent {
+  @Expose({ name: "updated_member_record_number" })
+  @IsNumber()
   readonly updatedMemberRecordNumber: number
+
+  @Expose({ name: "member_role" })
+  @IsEnum(ChatRoomMemberRole)
   readonly memberRole: ChatRoomMemberRole
 
   constructor(
@@ -59,24 +72,14 @@ class UpdateMemberRoleEvent extends RoomManagementEvent {
 }
 
 class RemoveMemberEvent extends RoomManagementEvent {
+  @Expose({ name: "removed_member_record_number" })
+  @IsNumber()
   readonly removedMemberRecordNumber: number
 
   constructor(id: number, owner: Owner, createdAt: Date, removedMemberRecordNumber: number) {
     super(id, owner, createdAt)
 
     this.removedMemberRecordNumber = removedMemberRecordNumber
-  }
-}
-
-class ChatRoomMember {
-  readonly id: number
-  readonly rueJaiUserId: string
-  readonly rueJaiUserType: RueJaiUserType
-
-  constructor(id: number, rueJaiUserId: string, rueJaiUserType: RueJaiUserType) {
-    this.id = id
-    this.rueJaiUserId = rueJaiUserId
-    this.rueJaiUserType = rueJaiUserType
   }
 }
 
