@@ -1,11 +1,11 @@
 {
   "env": {
-    "node": true,
+    "node": true
   },
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["./tsconfig.json"],
+    "project": ["./tsconfig.json"]
   },
   "plugins": ["@typescript-eslint", "no-loops"],
   "extends": [
@@ -33,6 +33,7 @@
         "varsIgnorePattern": "^_",
         "ignoreRestSiblings": true
       }
-    ]
+    ],
+    "@typescript-eslint/restrict-template-expressions": "off"
   }
 }
