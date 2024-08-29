@@ -3,7 +3,7 @@
 import { WebSocket } from "ws"
 
 import { Controller } from "./controller"
-import { WebSocketClient } from "../models/web_socket_client"
+import { WebSocketClient } from "../models/webSocketClient"
 
 class WebSocketConnection {
   private connection: WebSocket

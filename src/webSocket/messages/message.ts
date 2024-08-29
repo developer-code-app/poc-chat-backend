@@ -1,3 +1,5 @@
+import { Event, eventFromObject } from "@models/events/event"
+
 class Message<T> {
   readonly type: string
   readonly chatRoomId: string
@@ -8,20 +10,25 @@ class Message<T> {
     this.chatRoomId = chatRoomId
     this.payload = payload
   }
+}
 
-  static fromJSON(json: unknown): Message<Event> {
-    try {
-      const { type, chatRoomId, payload } = json as { type: string; chatRoomId: string; payload: unknown }
+const messageFromObject = (obj: unknown): Message<Event> => {
+  try {
+    const { type, chatRoomId, payload } = obj as { type: string; chatRoomId: string; payload: unknown }
 
-      // if (type !== "EVENT") {
-      throw new Error("Invalid message type")
-      // }
+    switch (type) {
+      case "EVENT": {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        const event = eventFromObject(payload)
 
-      // return new Message<Event>(type, chatRoomId, Event)
-    } catch (_) {
-      throw new Error("Invalid message type")
+        return new Message(type, chatRoomId, event)
+      }
+      default:
+        throw new Error("Invalid message type")
     }
+  } catch (_) {
+    throw new Error("Invalid message type")
   }
 }
 
-export { Message }
+export { Message, messageFromObject }

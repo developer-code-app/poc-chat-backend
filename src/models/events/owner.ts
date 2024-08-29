@@ -1,7 +1,7 @@
 import { Expose } from "class-transformer"
 import { IsEnum, IsString } from "class-validator"
 
-import { RueJaiUserType } from "../rue_jai_user"
+import { RueJaiUserType } from "../rueJaiUser"
 
 class Owner {
   @Expose({ name: "rue_jai_user_id" })

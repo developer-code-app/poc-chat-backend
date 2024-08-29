@@ -1,17 +1,8 @@
 import { Expose } from "class-transformer"
 import { IsEnum, IsNumber, IsString } from "class-validator"
 
-enum RueJaiUserType {
-  RUE_JAI_ADMIN,
-  RUE_JAI_APP_USER,
-}
-
-enum RueJaiUserRole {
-  HOME_OWNER,
-  RESIDENT,
-  RENTER,
-  CUSTOMER_SERVICE,
-}
+import { RueJaiUserType } from "./rueJaiUserType"
+import { RueJaiUserRole } from "./rueJaiUserRole"
 
 class RueJaiUser {
   @Expose({ name: "id" })

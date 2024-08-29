@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { WebSocket } from "ws"
 
-import { WebSocketClient } from "../models/web_socket_client"
+import { WebSocketClient } from "../models/webSocketClient"
 
 class Controller {
   private connection: WebSocket

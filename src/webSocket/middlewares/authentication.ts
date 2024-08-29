@@ -2,7 +2,7 @@
 import WebSocket from "ws"
 import { IncomingMessage } from "http"
 
-import { WebSocketClient } from "../../models/web_socket_client"
+import { WebSocketClient } from "../../models/webSocketClient"
 
 class AuthenticationMiddleware {
   authenticate(_: WebSocket, request: IncomingMessage): WebSocketClient | undefined {

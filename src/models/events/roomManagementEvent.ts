@@ -1,7 +1,7 @@
 import { Expose } from "class-transformer"
 import { IsEnum, IsInstance, IsNumber, IsString } from "class-validator"
 
-import { ChatRoomMember, ChatRoomMemberRole } from "../chat_room_member"
+import { ChatRoomMember, ChatRoomMemberRole } from "../chatRoomMember"
 import { Event } from "./event"
 import { Owner } from "./owner"
 

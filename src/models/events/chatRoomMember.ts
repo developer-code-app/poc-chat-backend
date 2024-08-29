@@ -1,7 +1,7 @@
 import { IsEnum, IsNumber, IsString } from "class-validator"
 import { Expose } from "class-transformer"
 
-import { RueJaiUserType } from "../rue_jai_user"
+import { RueJaiUserType } from "../rueJaiUser"
 
 class ChatRoomMember {
   @Expose({ name: "id" })

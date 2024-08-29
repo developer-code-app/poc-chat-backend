@@ -1,12 +1,8 @@
 import { IsEnum, IsInstance, IsNumber } from "class-validator"
 import { Expose } from "class-transformer"
 
-import { RueJaiUser } from "./rue_jai_user"
-
-enum ChatRoomMemberRole {
-  ADMIN,
-  MEMBER,
-}
+import { RueJaiUser } from "./rueJaiUser"
+import { ChatRoomMemberRole } from "./chatRoomMemberRole"
 
 class ChatRoomMember {
   @Expose({ name: "id" })
