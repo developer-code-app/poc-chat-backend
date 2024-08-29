@@ -16,6 +16,10 @@ class Owner {
     this.rueJaiUserId = rueJaiUserId
     this.rueJaiUserType = rueJaiUserType
   }
+
+  toString(): string {
+    return `Owner: { rueJaiUserId: ${this.rueJaiUserId}, rueJaiUserType: ${this.rueJaiUserType} }`
+  }
 }
 
 export { Owner }

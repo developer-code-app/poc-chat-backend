@@ -1,33 +1,42 @@
-import { Event, eventFromObject } from "@models/events/event"
+import { IsNumber, IsString, validateOrReject } from "class-validator"
+
+import { Event } from "../../models/events/event"
+import { eventFromObject } from "../../parsers/eventParser"
 
 class Message<T> {
+  @IsString()
   readonly type: string
-  readonly chatRoomId: string
+
+  @IsNumber()
+  readonly chatRoomId: number
+
   readonly payload: T
 
-  constructor(type: string, chatRoomId: string, payload: T) {
+  constructor(type: string, chatRoomId: number, payload: T) {
     this.type = type
     this.chatRoomId = chatRoomId
     this.payload = payload
   }
+
+  toString(): string {
+    return JSON.stringify(this, null, 2)
+  }
 }
 
-const messageFromObject = (obj: unknown): Message<Event> => {
-  try {
-    const { type, chatRoomId, payload } = obj as { type: string; chatRoomId: string; payload: unknown }
+const messageFromObject = async (obj: unknown): Promise<Message<Event>> => {
+  const { type, chat_room_id: chatRoomId, payload } = obj as { type: string; chat_room_id: number; payload: unknown }
 
-    switch (type) {
-      case "EVENT": {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-        const event = eventFromObject(payload)
+  switch (type) {
+    case "EVENT": {
+      const event = eventFromObject(payload)
+      const message = new Message<Event>(type, chatRoomId, event)
 
-        return new Message(type, chatRoomId, event)
-      }
-      default:
-        throw new Error("Invalid message type")
+      await validateOrReject(message)
+
+      return message
     }
-  } catch (_) {
-    throw new Error("Invalid message type")
+    default:
+      throw new Error("Invalid message type")
   }
 }
 

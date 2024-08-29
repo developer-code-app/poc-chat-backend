@@ -2,6 +2,8 @@
 import { WebSocket } from "ws"
 
 import { WebSocketClient } from "../models/webSocketClient"
+import { Message } from "./messages/message"
+import { Event } from "../models/events/event"
 
 class Controller {
   private connection: WebSocket
@@ -12,8 +14,8 @@ class Controller {
     this.client = client
   }
 
-  onMessage(json: unknown) {
-    console.log(`${this.client.toString()}: ${json as string}`)
+  onMessage(message: Message<Event>) {
+    console.log(`${this.client.toString()}:\n${message.toString()}`)
   }
 
   onClose() {

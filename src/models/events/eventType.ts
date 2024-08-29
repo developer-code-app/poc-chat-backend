@@ -15,6 +15,10 @@ enum EventType {
 }
 
 const eventTypeFromString = (str: string): EventType => {
+  if (!str) {
+    throw new Error("Invalid event type: ${str}")
+  }
+
   switch (str.toUpperCase()) {
     case "CREATE_TEXT_MESSAGE":
       return EventType.CREATE_TEXT_MESSAGE

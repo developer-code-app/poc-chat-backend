@@ -1,3 +1,5 @@
+import "reflect-metadata"
+
 import { HttpServer } from "./http/httpServer"
 import { WebSocketServer } from "./webSocket/webSocketServer"
 

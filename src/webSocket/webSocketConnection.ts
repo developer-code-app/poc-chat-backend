@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-base-to-string */
 /* eslint-disable no-console */
 import { WebSocket } from "ws"
 
 import { Controller } from "./controller"
 import { WebSocketClient } from "../models/webSocketClient"
+import { messageFromObject } from "./messages/message"
 
 class WebSocketConnection {
   private connection: WebSocket
@@ -19,19 +19,18 @@ class WebSocketConnection {
   }
 
   setup() {
-    this.connection.on("message", this.onMessage)
+    this.connection.on("message", (message: string) => void this.onMessage(message))
 
     this.connection.on("close", this.onClose)
   }
 
-  private onMessage = (message: string) => {
+  private onMessage = async (message: string) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const json: unknown = JSON.parse(message)
 
-      this.handleJsonMessage(json)
-    } catch (_) {
-      console.error("Failed to parse message as JSON")
+      await this.handleJsonMessage(json)
+    } catch (error: unknown) {
+      console.error("Error Occurred:", error)
     }
   }
 
@@ -39,8 +38,10 @@ class WebSocketConnection {
     console.log(`${this.client.toString()}: Disconnected`)
   }
 
-  private handleJsonMessage(json: unknown) {
-    this.controller.onMessage(json)
+  private async handleJsonMessage(json: unknown) {
+    const message = await messageFromObject(json)
+
+    this.controller.onMessage(message)
   }
 }
 
