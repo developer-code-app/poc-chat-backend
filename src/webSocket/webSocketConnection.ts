@@ -4,16 +4,20 @@ import { WebSocket } from "ws"
 import { Controller } from "./controller"
 import { WebSocketClient } from "../models/webSocketClient"
 import { messageFromObject } from "./messages/message"
+import { WebSocketServer } from "./webSocketServer"
 
 class WebSocketConnection {
+  readonly client: WebSocketClient
+
+  private server: WebSocketServer
   private connection: WebSocket
-  private client: WebSocketClient
   private controller: Controller
 
-  constructor(connection: WebSocket, client: WebSocketClient) {
+  constructor(server: WebSocketServer, connection: WebSocket, client: WebSocketClient) {
+    this.server = server
     this.connection = connection
     this.client = client
-    this.controller = new Controller(connection, client)
+    this.controller = new Controller(server, connection, client)
 
     this.setup()
   }
@@ -22,6 +26,14 @@ class WebSocketConnection {
     this.connection.on("message", (message: string) => void this.onMessage(message))
 
     this.connection.on("close", this.onClose)
+  }
+
+  send(message: string) {
+    this.connection.send(message)
+  }
+
+  isEquals(connection: WebSocketConnection) {
+    return this.client.isEquals(connection.client)
   }
 
   private onMessage = async (message: string) => {

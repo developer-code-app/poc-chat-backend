@@ -6,6 +6,8 @@ import { WebSocketConnection } from "./webSocketConnection"
 import { AuthenticationMiddleware } from "./middlewares/authentication"
 
 class WebSocketServer {
+  readonly connections: WebSocketConnection[] = []
+
   private _server: Server | undefined
   private port: string
   private authenticationMiddleware: AuthenticationMiddleware = new AuthenticationMiddleware()
@@ -34,7 +36,7 @@ class WebSocketServer {
     const client = this.authenticationMiddleware.authenticate(connection, request)
 
     if (client) {
-      new WebSocketConnection(connection, client)
+      this.connections.push(new WebSocketConnection(this, connection, client))
     }
   }
 

@@ -8,6 +8,10 @@ class WebSocketClient {
   toString(): string {
     return `WebSocketClient [${this.credential}]`
   }
+
+  isEquals(client: WebSocketClient): boolean {
+    return this.credential === client.credential
+  }
 }
 
 export { WebSocketClient }
