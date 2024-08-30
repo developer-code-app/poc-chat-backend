@@ -1,4 +1,4 @@
-import { Expose } from "class-transformer"
+import { Expose, Type } from "class-transformer"
 import { IsEnum, IsInstance, IsNumber, IsString } from "class-validator"
 
 import { ChatRoomMember, ChatRoomMemberRole } from "../chatRoomMember"
@@ -18,6 +18,7 @@ class CreateRoomEvent extends RoomManagementEvent {
 
   @Expose({ name: "members" })
   @IsInstance(ChatRoomMember, { each: true })
+  @Type(() => ChatRoomMember)
   readonly members: ChatRoomMember[]
 
   constructor(
@@ -39,6 +40,7 @@ class CreateRoomEvent extends RoomManagementEvent {
 class InviteMemberEvent extends RoomManagementEvent {
   @Expose({ name: "member" })
   @IsInstance(ChatRoomMember)
+  @Type(() => ChatRoomMember)
   readonly member: ChatRoomMember
 
   constructor(id: number, owner: Owner, createdAt: Date, member: ChatRoomMember) {

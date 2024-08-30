@@ -13,7 +13,7 @@ import {
   UpdateTextMessageEvent,
 } from "../models/events/messageEvent"
 import { ReadMessageEvent } from "../models/events/readEvent"
-import { CreateRoomEvent } from "../models/events/roomManagementEvent"
+import { CreateRoomEvent, InviteMemberEvent } from "../models/events/roomManagementEvent"
 
 const eventFromObject = (obj: unknown): Event => {
   const { type } = obj as { type: string }
@@ -44,7 +44,7 @@ const eventFromObject = (obj: unknown): Event => {
       event = plainToInstance(CreateFileMessageEvent, obj)
       break
     }
-    case EventType.TEXT_EDITED: {
+    case EventType.EDIT_TEXT_MESSAGE: {
       event = plainToInstance(UpdateTextMessageEvent, obj)
       break
     }
@@ -58,6 +58,10 @@ const eventFromObject = (obj: unknown): Event => {
     }
     case EventType.CREATE_ROOM: {
       event = plainToInstance(CreateRoomEvent, obj)
+      break
+    }
+    case EventType.INVITE_MEMBER: {
+      event = plainToInstance(InviteMemberEvent, obj)
       break
     }
     default:

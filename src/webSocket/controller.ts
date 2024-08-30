@@ -5,6 +5,7 @@ import { WebSocketClient } from "../models/webSocketClient"
 import { Message } from "./messages/message"
 import { Event } from "../models/events/event"
 import { WebSocketServer } from "./webSocketServer"
+import { InviteMemberEvent } from "../models/events/roomManagementEvent"
 
 class Controller {
   private server: WebSocketServer
@@ -18,9 +19,15 @@ class Controller {
   }
 
   onMessage(message: Message<Event>) {
-    console.log(`${this.client.toString()}:\n${message.toString()}`)
+    const event = message.payload
 
-    this.broadcast(message)
+    if (event instanceof InviteMemberEvent) {
+      const invitedMember = event.member
+
+      console.log(`${this.client.toString()}: Invited ${JSON.stringify(invitedMember, null, 2)}`)
+    } else {
+      console.log(`${this.client.toString()}:\n${message.toString()}`)
+    }
   }
 
   onClose() {

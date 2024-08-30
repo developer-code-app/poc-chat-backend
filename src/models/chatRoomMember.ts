@@ -18,8 +18,7 @@ class ChatRoomMember {
   readonly rueJaiUser: RueJaiUser
 
   @Expose({ name: "last_read_message_record_number" })
-  @IsNumber()
-  readonly lastReadMessageRecordNumber: number
+  readonly lastReadMessageRecordNumber: number | undefined
 
   constructor(id: number, role: ChatRoomMemberRole, rueJaiUser: RueJaiUser, lastReadMessageRecordNumber: number) {
     this.id = id
