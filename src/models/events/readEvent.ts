@@ -7,12 +7,12 @@ import { Owner } from "./owner"
 class ReadMessageEvent extends Event {
   @Expose({ name: "read_message_record_number" })
   @IsNumber()
-  readonly readMessageRecordNumber: number
+  readonly lastReadMessageAddedByEventRecordNumber: number
 
-  constructor(id: number, owner: Owner, createdAt: Date, readMessageRecordNumber: number) {
+  constructor(id: number, owner: Owner, createdAt: Date, lastReadMessageAddedByEventRecordNumber: number) {
     super(id, owner, createdAt)
 
-    this.readMessageRecordNumber = readMessageRecordNumber
+    this.lastReadMessageAddedByEventRecordNumber = lastReadMessageAddedByEventRecordNumber
   }
 }
 

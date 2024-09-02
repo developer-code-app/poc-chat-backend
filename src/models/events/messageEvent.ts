@@ -10,12 +10,12 @@ abstract class CreateMessageEvent extends MessageEvent {}
 abstract class UpdateMessageEvent extends MessageEvent {
   @Expose({ name: "updated_message_record_number" })
   @IsNumber()
-  readonly updatedMessageRecordNumber: number
+  readonly updatedMessageAddedByEventRecordNumber: number
 
-  constructor(id: number, owner: Owner, createdAt: Date, updatedMessageRecordNumber: number) {
+  constructor(id: number, owner: Owner, createdAt: Date, updatedMessageAddedByEventRecordNumber: number) {
     super(id, owner, createdAt)
 
-    this.updatedMessageRecordNumber = updatedMessageRecordNumber
+    this.updatedMessageAddedByEventRecordNumber = updatedMessageAddedByEventRecordNumber
   }
 }
 
@@ -91,8 +91,8 @@ class UpdateTextMessageEvent extends UpdateMessageEvent {
   @IsString()
   readonly text: string
 
-  constructor(id: number, owner: Owner, createdAt: Date, updatedMessageRecordNumber: number, text: string) {
-    super(id, owner, createdAt, updatedMessageRecordNumber)
+  constructor(id: number, owner: Owner, createdAt: Date, updatedMessageAddedByEventRecordNumber: number, text: string) {
+    super(id, owner, createdAt, updatedMessageAddedByEventRecordNumber)
 
     this.text = text
   }
@@ -101,12 +101,12 @@ class UpdateTextMessageEvent extends UpdateMessageEvent {
 class DeleteMessageEvent extends MessageEvent {
   @Expose({ name: "deleted_message_record_number" })
   @IsNumber()
-  readonly deletedMessageRecordNumber: number
+  readonly deletedMessageAddedByEventRecordNumber: number
 
-  constructor(id: number, owner: Owner, createdAt: Date, deletedMessageRecordNumber: number) {
+  constructor(id: number, owner: Owner, createdAt: Date, deletedMessageAddedByEventRecordNumber: number) {
     super(id, owner, createdAt)
 
-    this.deletedMessageRecordNumber = deletedMessageRecordNumber
+    this.deletedMessageAddedByEventRecordNumber = deletedMessageAddedByEventRecordNumber
   }
 }
 
