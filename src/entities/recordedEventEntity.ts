@@ -25,7 +25,7 @@ class RecordedEventEntity {
   @IsEnum(EventType)
   type: EventType
 
-  @Column()
+  @Column({ type: "jsonb" })
   @IsObject()
   content: unknown
 

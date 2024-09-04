@@ -1,13 +1,33 @@
 import "reflect-metadata"
+import dotenv from "dotenv"
 
+import { AppDataSource } from "./dataSource"
 import { HttpServer } from "./http/httpServer"
 import { WebSocketServer } from "./webSocket/webSocketServer"
 
-const HTTP_PORT: string = process.env.HTTP_PORT ?? "3000"
-const WSS_PORT = process.env.WS_PORT ?? "4000"
+async function main() {
+  loadConfigs()
+  await connectToDatabase()
+  startServers()
+}
 
-const httpServer = new HttpServer(HTTP_PORT)
-const webSocketServer = new WebSocketServer(WSS_PORT)
+function loadConfigs() {
+  dotenv.config()
+}
 
-httpServer.start()
-webSocketServer.start()
+async function connectToDatabase() {
+  await AppDataSource.initialize()
+}
+
+function startServers() {
+  const HTTP_PORT: string = process.env.HTTP_PORT ?? "3000"
+  const WSS_PORT = process.env.WSS_PORT ?? "4000"
+
+  const httpServer = new HttpServer(HTTP_PORT)
+  const webSocketServer = new WebSocketServer(WSS_PORT)
+
+  httpServer.start()
+  webSocketServer.start()
+}
+
+void main()
