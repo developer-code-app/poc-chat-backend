@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm"
 
 import { RueJaiUserType } from "../models/rueJaiUserType"
 import { IsEnum, IsNumber, IsString } from "class-validator"
+import { ChatRoom } from "./rueJaiChatRoomEntity"
 
 @Entity()
 class RueJaiUserEntity {
@@ -21,11 +22,22 @@ class RueJaiUserEntity {
   @IsString()
   thumbnailUrl: string
 
-  constructor(id: number, rueJaiUserId: string, rueJaiUserType: RueJaiUserType, thumbnailUrl: string) {
+  @ManyToMany(() => ChatRoom)
+  @JoinTable()
+  chatRooms: ChatRoom[]
+
+  constructor(
+    id: number,
+    rueJaiUserId: string,
+    rueJaiUserType: RueJaiUserType,
+    thumbnailUrl: string,
+    chatRooms: ChatRoom[]
+  ) {
     this.id = id
     this.rueJaiUserId = rueJaiUserId
     this.rueJaiUserType = rueJaiUserType
     this.thumbnailUrl = thumbnailUrl
+    this.chatRooms = chatRooms
   }
 }
 

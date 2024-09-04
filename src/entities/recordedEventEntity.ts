@@ -11,6 +11,10 @@ class RecordedEventEntity {
 
   @Column()
   @IsNumber()
+  chatRoomId: number
+
+  @Column()
+  @IsNumber()
   recordNumber: number
 
   @Column()
@@ -43,6 +47,7 @@ class RecordedEventEntity {
 
   constructor(
     id: string,
+    chatRoomId: number,
     recordNumber: number,
     recordedAt: Date,
     eventId: number,
@@ -53,6 +58,7 @@ class RecordedEventEntity {
     ownerRueJaiUserType: RueJaiUserType
   ) {
     this.id = id
+    this.chatRoomId = chatRoomId
     this.recordNumber = recordNumber
     this.recordedAt = recordedAt
     this.eventId = eventId
