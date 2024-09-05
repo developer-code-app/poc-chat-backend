@@ -9,23 +9,18 @@ class WebSocketServer {
   readonly connections: WebSocketConnection[] = []
 
   private _server: Server | undefined
-  private port: string
   private authenticationMiddleware: AuthenticationMiddleware = new AuthenticationMiddleware()
 
-  constructor(port: string) {
-    this.port = port
-  }
-
-  start() {
-    this.initializeWebSocketServer()
+  start(port: string) {
+    this.initializeWebSocketServer(port)
     this.setupWebSocketServer()
 
     // eslint-disable-next-line no-console
-    console.log(`WebSocket server started at ws://localhost:${this.port}`)
+    console.log(`WebSocket server started at ws://localhost:${port}`)
   }
 
-  private initializeWebSocketServer() {
-    this._server = new Server({ port: parseInt(this.port) })
+  private initializeWebSocketServer(port: string) {
+    this._server = new Server({ port: parseInt(port) })
   }
 
   private setupWebSocketServer() {
@@ -49,4 +44,6 @@ class WebSocketServer {
   }
 }
 
-export { WebSocketServer }
+const webSocketServer = new WebSocketServer()
+
+export { webSocketServer }

@@ -4,18 +4,12 @@ import { createRouter } from "./router"
 class HttpServer {
   private app: Express = express()
   private router: Router = createRouter()
-  private port: string
 
-  constructor(port: string) {
-    this.port = port
-
+  start(port: string) {
     this.setupRoutes()
-  }
-
-  start() {
-    this.app.listen(this.port, () => {
+    this.app.listen(port, () => {
       // eslint-disable-next-line no-console
-      console.log(`Http Server is running on http://localhost:${this.port}`)
+      console.log(`Http Server is running on http://localhost:${port}`)
     })
   }
 
@@ -28,4 +22,6 @@ class HttpServer {
   }
 }
 
-export { HttpServer }
+const httpServer = new HttpServer()
+
+export { httpServer }
