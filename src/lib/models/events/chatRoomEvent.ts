@@ -3,7 +3,7 @@ import { IsDate, IsInstance, IsNumber } from "class-validator"
 
 import { Owner } from "./owner"
 
-class Event {
+class ChatRoomEvent {
   @Expose({ name: "id" })
   @IsNumber()
   readonly id: number
@@ -25,4 +25,4 @@ class Event {
   }
 }
 
-export { Event }
+export { ChatRoomEvent }

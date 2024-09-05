@@ -31,7 +31,7 @@ class WebSocketServer {
     const client = this.authenticationMiddleware.authenticate(connection, request)
 
     if (client) {
-      this.connections.push(new WebSocketConnection(this, connection, client))
+      this.connections.push(new WebSocketConnection(connection, client))
     }
   }
 

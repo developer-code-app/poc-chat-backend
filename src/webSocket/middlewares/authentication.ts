@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import WebSocket from "ws"
 import { IncomingMessage } from "http"
-
-import { WebSocketClient } from "../../models/webSocketClient"
+import { WebSocketClient } from "../../lib/models/webSocketClient"
 
 class AuthenticationMiddleware {
   authenticate(_: WebSocket, request: IncomingMessage): WebSocketClient | undefined {

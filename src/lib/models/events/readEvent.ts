@@ -1,10 +1,10 @@
 import { Expose } from "class-transformer"
 import { IsNumber } from "class-validator"
 
-import { Event } from "./event"
+import { ChatRoomEvent } from "./chatRoomEvent"
 import { Owner } from "./owner"
 
-class ReadMessageEvent extends Event {
+class ReadMessageEvent extends ChatRoomEvent {
   @Expose({ name: "read_message_record_number" })
   @IsNumber()
   readonly lastReadMessageAddedByEventRecordNumber: number

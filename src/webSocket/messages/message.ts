@@ -1,7 +1,7 @@
 import { IsNumber, IsString, validateOrReject } from "class-validator"
 
-import { Event } from "../../models/events/event"
-import { eventFromObject } from "../../parsers/eventParser"
+import { ChatRoomEvent } from "../../lib/models/events/chatRoomEvent"
+import { eventFromObject } from "../../lib/parsers/eventParser"
 
 class Message<T> {
   @IsString()
@@ -23,13 +23,13 @@ class Message<T> {
   }
 }
 
-const messageFromObject = async (obj: unknown): Promise<Message<Event>> => {
+const messageFromObject = async (obj: unknown): Promise<Message<ChatRoomEvent>> => {
   const { type, chat_room_id: chatRoomId, payload } = obj as { type: string; chat_room_id: number; payload: unknown }
 
   switch (type) {
     case "EVENT": {
       const event = eventFromObject(payload)
-      const message = new Message<Event>(type, chatRoomId, event)
+      const message = new Message<ChatRoomEvent>(type, chatRoomId, event)
 
       await validateOrReject(message)
 

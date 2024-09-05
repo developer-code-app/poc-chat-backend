@@ -2,12 +2,12 @@ import { Expose, Type } from "class-transformer"
 import { IsEnum, IsInstance, IsNumber, IsString } from "class-validator"
 
 import { ChatRoomMember, ChatRoomMemberRole } from "../chatRoomMember"
-import { Event } from "./event"
+import { ChatRoomEvent } from "./chatRoomEvent"
 import { Owner } from "./owner"
 
-abstract class RoomManagementEvent extends Event {}
+abstract class RoomEvent extends ChatRoomEvent {}
 
-class CreateRoomEvent extends RoomManagementEvent {
+class CreateRoomEvent extends RoomEvent {
   @Expose({ name: "name" })
   @IsString()
   readonly name: string
@@ -37,7 +37,7 @@ class CreateRoomEvent extends RoomManagementEvent {
   }
 }
 
-class InviteMemberEvent extends RoomManagementEvent {
+class InviteMemberEvent extends RoomEvent {
   @Expose({ name: "member" })
   @IsInstance(ChatRoomMember)
   @Type(() => ChatRoomMember)
@@ -50,7 +50,7 @@ class InviteMemberEvent extends RoomManagementEvent {
   }
 }
 
-class UpdateMemberRoleEvent extends RoomManagementEvent {
+class UpdateMemberRoleEvent extends RoomEvent {
   @Expose({ name: "updated_member_record_number" })
   @IsNumber()
   readonly updatedMemberRecordNumber: number
@@ -73,7 +73,7 @@ class UpdateMemberRoleEvent extends RoomManagementEvent {
   }
 }
 
-class RemoveMemberEvent extends RoomManagementEvent {
+class RemoveMemberEvent extends RoomEvent {
   @Expose({ name: "removed_member_record_number" })
   @IsNumber()
   readonly removedMemberRecordNumber: number
@@ -85,4 +85,10 @@ class RemoveMemberEvent extends RoomManagementEvent {
   }
 }
 
-export { RoomManagementEvent, CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent, RemoveMemberEvent }
+export {
+  RoomEvent,
+  CreateRoomEvent,
+  InviteMemberEvent,
+  UpdateMemberRoleEvent,
+  RemoveMemberEvent,
+}

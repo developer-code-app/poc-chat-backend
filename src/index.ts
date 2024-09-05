@@ -1,7 +1,7 @@
 import "reflect-metadata"
 import dotenv from "dotenv"
 
-import { AppDataSource } from "./dataSource"
+import { AppDataSource } from "./lib/dataSource"
 import { httpServer } from "./http/httpServer"
 import { webSocketServer } from "./webSocket/webSocketServer"
 import { DataSource } from "typeorm"

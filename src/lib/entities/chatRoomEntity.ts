@@ -1,6 +1,7 @@
 import { IsNumber } from "class-validator"
-import { PrimaryGeneratedColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn } from "typeorm"
 
+@Entity()
 class ChatRoomEntity {
   @PrimaryGeneratedColumn()
   @IsNumber()

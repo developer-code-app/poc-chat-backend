@@ -1,7 +1,7 @@
 import { IsDate, IsNumber } from "class-validator"
 import { Expose } from "class-transformer"
 
-import { Event } from "./event"
+import { ChatRoomEvent } from "./chatRoomEvent"
 import { IsEventSubclass } from "./validator"
 
 class RecordedEvent {
@@ -15,9 +15,9 @@ class RecordedEvent {
 
   @Expose({ name: "event" })
   @IsEventSubclass()
-  readonly event: Event
+  readonly event: ChatRoomEvent
 
-  constructor(recordNumber: number, recordedAt: Date, event: Event) {
+  constructor(recordNumber: number, recordedAt: Date, event: ChatRoomEvent) {
     this.recordNumber = recordNumber
     this.recordedAt = recordedAt
     this.event = event

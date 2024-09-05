@@ -1,9 +1,9 @@
 import { Expose } from "class-transformer"
-import { Event } from "./event"
+import { ChatRoomEvent } from "./chatRoomEvent"
 import { Owner } from "./owner"
 import { IsNumber, IsString } from "class-validator"
 
-abstract class MessageEvent extends Event {}
+abstract class MessageEvent extends ChatRoomEvent {}
 
 abstract class CreateMessageEvent extends MessageEvent {}
 

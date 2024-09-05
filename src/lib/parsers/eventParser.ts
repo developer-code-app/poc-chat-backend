@@ -1,7 +1,7 @@
 import { plainToInstance } from "class-transformer"
 import { validateSync } from "class-validator"
 
-import { Event } from "../models/events/event"
+import { ChatRoomEvent } from "../models/events/chatRoomEvent"
 import { EventType, eventTypeFromString } from "../models/events/eventType"
 import {
   CreateFileMessageEvent,
@@ -19,11 +19,11 @@ import { RecordedEventEntity } from "../entities/recordedEventEntity"
 import { Owner } from "../models/events/owner"
 import { ChatRoomMember } from "../models/chatRoomMember"
 
-const eventFromObject = (obj: unknown): Event => {
+const eventFromObject = (obj: unknown): ChatRoomEvent => {
   const { type } = obj as { type: string }
 
   const eventType: EventType = eventTypeFromString(type)
-  let event: Event | undefined
+  let event: ChatRoomEvent | undefined
 
   switch (eventType) {
     case EventType.CREATE_TEXT_MESSAGE: {
@@ -84,7 +84,7 @@ const eventFromObject = (obj: unknown): Event => {
 const eventFromEntity = (entity: RecordedEventEntity): RecordedEvent => {
   const { recordNumber, recordedAt, eventId, type, content, createdAt, ownerRueJaiUserId, ownerRueJaiUserType } = entity
   const eventType: EventType = eventTypeFromString(type)
-  let event: Event
+  let event: ChatRoomEvent
   const owner = new Owner(ownerRueJaiUserId, ownerRueJaiUserType)
 
   switch (eventType) {

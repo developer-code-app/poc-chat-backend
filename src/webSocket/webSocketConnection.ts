@@ -2,22 +2,19 @@
 import { WebSocket } from "ws"
 
 import { Controller } from "./controller"
-import { WebSocketClient } from "../models/webSocketClient"
+import { WebSocketClient } from "../lib/models/webSocketClient"
 import { messageFromObject } from "./messages/message"
-import { WebSocketServer } from "./webSocketServer"
 
 class WebSocketConnection {
   readonly client: WebSocketClient
 
-  private server: WebSocketServer
   private connection: WebSocket
   private controller: Controller
 
-  constructor(server: WebSocketServer, connection: WebSocket, client: WebSocketClient) {
-    this.server = server
+  constructor(connection: WebSocket, client: WebSocketClient) {
     this.connection = connection
     this.client = client
-    this.controller = new Controller(server, connection, client)
+    this.controller = new Controller(connection, client)
 
     this.setup()
   }
