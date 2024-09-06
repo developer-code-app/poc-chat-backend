@@ -19,6 +19,10 @@ class WebSocketServer {
     console.log(`WebSocket server started at ws://localhost:${port}`)
   }
 
+  isActive(): boolean {
+    return !!this._server
+  }
+
   private initializeWebSocketServer(port: string) {
     this._server = new Server({ port: parseInt(port) })
   }
