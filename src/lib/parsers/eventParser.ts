@@ -13,7 +13,7 @@ import {
   UpdateTextMessageEvent,
 } from "../models/events/messageEvent"
 import { ReadMessageEvent } from "../models/events/readEvent"
-import { CreateRoomEvent, InviteMemberEvent } from "../models/events/roomManagementEvent"
+import { CreateRoomEvent, InviteMemberEvent } from "../models/events/roomEvent"
 import { RecordedEvent } from "../models/events/recordedEvent"
 import { RecordedEventEntity } from "../entities/recordedEventEntity"
 import { Owner } from "../models/events/owner"

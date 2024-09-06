@@ -3,7 +3,7 @@ import { WebSocket } from "ws"
 
 import { WebSocketClient } from "../lib/models/webSocketClient"
 import { Message } from "./messages/message"
-import { InviteMemberEvent } from "../lib/models/events/roomManagementEvent"
+import { InviteMemberEvent } from "../lib/models/events/roomEvent"
 import { ChatRoomEvent } from "../lib/models/events/chatRoomEvent"
 
 class Controller {
