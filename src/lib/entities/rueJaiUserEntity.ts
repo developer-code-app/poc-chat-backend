@@ -9,49 +9,31 @@ import { RueJaiUserRole } from "../models/rueJaiUserRole"
 class RueJaiUserEntity {
   @PrimaryGeneratedColumn()
   @IsNumber()
-  id: number
+  id!: number
 
   @Column()
   @IsString()
-  rueJaiUserId: string
+  rueJaiUserId!: string
 
   @Column()
   @IsEnum(RueJaiUserType)
-  rueJaiUserType: RueJaiUserType
+  rueJaiUserType!: RueJaiUserType
 
   @Column()
   @IsEnum(RueJaiUserRole)
-  rueJaiUserRole: RueJaiUserRole
+  rueJaiUserRole!: RueJaiUserRole
 
   @Column()
   @IsString()
-  name: string
+  name!: string
 
   @Column()
   @IsString()
-  thumbnailUrl: string
+  thumbnailUrl!: string
 
   @ManyToMany(() => ChatRoomEntity)
   @JoinTable()
-  chatRooms: ChatRoomEntity[]
-
-  constructor(
-    id: number,
-    rueJaiUserId: string,
-    rueJaiUserType: RueJaiUserType,
-    rueJaiUserRole: RueJaiUserRole,
-    name: string,
-    thumbnailUrl: string,
-    chatRooms: ChatRoomEntity[]
-  ) {
-    this.id = id
-    this.rueJaiUserId = rueJaiUserId
-    this.rueJaiUserType = rueJaiUserType
-    this.rueJaiUserRole = rueJaiUserRole
-    this.name = name
-    this.thumbnailUrl = thumbnailUrl
-    this.chatRooms = chatRooms
-  }
+  chatRooms!: ChatRoomEntity[]
 }
 
 export { RueJaiUserEntity }

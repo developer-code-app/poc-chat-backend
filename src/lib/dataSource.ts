@@ -3,7 +3,7 @@ import { DataSource } from "typeorm"
 import { plainToClass } from "class-transformer"
 
 import { DatabaseConfig } from "./models/databaseConfig"
-import { RecordedEventEntity } from "./entities/recordedEventEntity"
+import { RoomAndMessageEventEntity } from "./entities/roomAndMessageEventEntity"
 import { RueJaiUserEntity } from "./entities/rueJaiUserEntity"
 import { ChatRoomEntity } from "./entities/chatRoomEntity"
 import dotenv from "dotenv"
@@ -32,7 +32,7 @@ const AppDataSource = new DataSource({
   database: databaseConfig.database,
   synchronize: true,
   logging: false,
-  entities: [RecordedEventEntity, RueJaiUserEntity, ChatRoomEntity],
+  entities: [RoomAndMessageEventEntity, RueJaiUserEntity, ChatRoomEntity],
   migrations: [],
   subscribers: [],
 })

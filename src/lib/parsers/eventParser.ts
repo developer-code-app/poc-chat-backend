@@ -15,7 +15,7 @@ import {
 import { ReadMessageEvent } from "../models/events/readEvent"
 import { CreateRoomEvent, InviteMemberEvent } from "../models/events/roomEvent"
 import { RecordedEvent } from "../models/events/recordedEvent"
-import { RecordedEventEntity } from "../entities/recordedEventEntity"
+import { RoomAndMessageEventEntity } from "../entities/roomAndMessageEventEntity"
 import { Owner } from "../models/events/owner"
 import { ChatRoomMember } from "../models/chatRoomMember"
 
@@ -81,7 +81,7 @@ const eventFromObject = (obj: unknown): ChatRoomEvent => {
   return event
 }
 
-const eventFromEntity = (entity: RecordedEventEntity): RecordedEvent => {
+const eventFromEntity = (entity: RoomAndMessageEventEntity): RecordedEvent => {
   const { recordNumber, recordedAt, eventId, type, content, createdAt, ownerRueJaiUserId, ownerRueJaiUserType } = entity
   const eventType: EventType = eventTypeFromString(type)
   let event: ChatRoomEvent

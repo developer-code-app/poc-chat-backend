@@ -5,11 +5,7 @@ import { Entity, PrimaryGeneratedColumn } from "typeorm"
 class ChatRoomEntity {
   @PrimaryGeneratedColumn()
   @IsNumber()
-  id: number
-
-  constructor(id: number) {
-    this.id = id
-  }
+  id!: number
 }
 
 export { ChatRoomEntity }
