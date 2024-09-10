@@ -2,8 +2,9 @@ import { Expose, Type } from "class-transformer"
 import { IsDate, IsInstance, IsNumber } from "class-validator"
 
 import { Owner } from "./owner"
+import { EventType } from "./eventType"
 
-class ChatRoomEvent {
+abstract class ChatRoomEvent {
   @Expose({ name: "id" })
   @IsNumber()
   readonly id: number
@@ -22,6 +23,10 @@ class ChatRoomEvent {
     this.id = id
     this.owner = owner
     this.createdAt = createdAt
+  }
+
+  get type(): EventType {
+    throw new Error("Not implemented")
   }
 }
 

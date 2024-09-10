@@ -3,6 +3,7 @@ import { IsNumber } from "class-validator"
 
 import { ChatRoomEvent } from "./chatRoomEvent"
 import { Owner } from "./owner"
+import { EventType } from "./eventType"
 
 class ReadMessageEvent extends ChatRoomEvent {
   @Expose({ name: "read_message_record_number" })
@@ -13,6 +14,10 @@ class ReadMessageEvent extends ChatRoomEvent {
     super(id, owner, createdAt)
 
     this.lastReadMessageAddedByEventRecordNumber = lastReadMessageAddedByEventRecordNumber
+  }
+
+  get type() {
+    return EventType.READ_MESSAGE
   }
 }
 

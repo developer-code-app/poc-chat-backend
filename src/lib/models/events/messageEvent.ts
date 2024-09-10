@@ -1,7 +1,9 @@
 import { Expose } from "class-transformer"
+import { IsNumber, IsString } from "class-validator"
+
 import { ChatRoomEvent } from "./chatRoomEvent"
 import { Owner } from "./owner"
-import { IsNumber, IsString } from "class-validator"
+import { EventType } from "./eventType"
 
 abstract class MessageEvent extends ChatRoomEvent {}
 
@@ -29,6 +31,10 @@ class CreateTextMessageEvent extends CreateMessageEvent {
 
     this.text = text
   }
+
+  get type() {
+    return EventType.CREATE_TEXT_MESSAGE
+  }
 }
 
 class CreateTextReplyMessageEvent extends CreateMessageEvent {
@@ -46,6 +52,10 @@ class CreateTextReplyMessageEvent extends CreateMessageEvent {
     this.repliedMessageAddedByEventRecordNumber = repliedMessageAddedByEventRecordNumber
     this.text = text
   }
+
+  get type() {
+    return EventType.CREATE_TEXT_REPLY_MESSAGE
+  }
 }
 
 class CreatePhotoMessageEvent extends CreateMessageEvent {
@@ -57,6 +67,10 @@ class CreatePhotoMessageEvent extends CreateMessageEvent {
     super(id, owner, createdAt)
 
     this.urls = urls
+  }
+
+  get type() {
+    return EventType.CREATE_PHOTO_MESSAGE
   }
 }
 
@@ -70,6 +84,10 @@ class CreateVideoMessageEvent extends CreateMessageEvent {
 
     this.url = url
   }
+
+  get type() {
+    return EventType.CREATE_VIDEO_MESSAGE
+  }
 }
 
 class CreateFileMessageEvent extends CreateMessageEvent {
@@ -82,9 +100,11 @@ class CreateFileMessageEvent extends CreateMessageEvent {
 
     this.url = url
   }
-}
 
-class CreateMiniAppMessageEvent extends CreateMessageEvent {}
+  get type() {
+    return EventType.CREATE_FILE_MESSAGE
+  }
+}
 
 class UpdateTextMessageEvent extends UpdateMessageEvent {
   @Expose({ name: "text" })
@@ -95,6 +115,10 @@ class UpdateTextMessageEvent extends UpdateMessageEvent {
     super(id, owner, createdAt, updatedMessageAddedByEventRecordNumber)
 
     this.text = text
+  }
+
+  get type() {
+    return EventType.EDIT_TEXT_MESSAGE
   }
 }
 
@@ -108,6 +132,10 @@ class DeleteMessageEvent extends MessageEvent {
 
     this.deletedMessageAddedByEventRecordNumber = deletedMessageAddedByEventRecordNumber
   }
+
+  get type() {
+    return EventType.DELETE_MESSAGE
+  }
 }
 
 export {
@@ -119,7 +147,6 @@ export {
   CreatePhotoMessageEvent,
   CreateVideoMessageEvent,
   CreateFileMessageEvent,
-  CreateMiniAppMessageEvent,
   UpdateTextMessageEvent,
   DeleteMessageEvent,
 }

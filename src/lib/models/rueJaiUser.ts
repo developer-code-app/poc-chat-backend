@@ -1,5 +1,5 @@
 import { Expose } from "class-transformer"
-import { IsEnum, IsNumber, IsString } from "class-validator"
+import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator"
 
 import { RueJaiUserType } from "./rueJaiUserType"
 import { RueJaiUserRole } from "./rueJaiUserRole"
@@ -26,8 +26,9 @@ class RueJaiUser {
   readonly name: string
 
   @Expose({ name: "thumbnail_url" })
+  @IsOptional()
   @IsString()
-  readonly thumbnailUrl: string
+  readonly thumbnailUrl?: string
 
   constructor(
     id: number,
@@ -35,7 +36,7 @@ class RueJaiUser {
     rueJaiUserType: RueJaiUserType,
     rueJaiUserRole: RueJaiUserRole,
     name: string,
-    thumbnailUrl: string
+    thumbnailUrl?: string
   ) {
     this.id = id
     this.rueJaiUserId = rueJaiUserId

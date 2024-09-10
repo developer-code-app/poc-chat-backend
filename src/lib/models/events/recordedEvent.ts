@@ -22,6 +22,10 @@ class RecordedEvent {
     this.recordedAt = recordedAt
     this.event = event
   }
+
+  get type() {
+    return this.event.type
+  }
 }
 
 export { RecordedEvent }

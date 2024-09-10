@@ -4,6 +4,8 @@ import { IsEnum, IsInstance, IsNumber, IsString } from "class-validator"
 import { ChatRoomMember, ChatRoomMemberRole } from "../chatRoomMember"
 import { ChatRoomEvent } from "./chatRoomEvent"
 import { Owner } from "./owner"
+import { RueJaiUserType } from "../rueJaiUserType"
+import { EventType } from "./eventType"
 
 abstract class RoomEvent extends ChatRoomEvent {}
 
@@ -40,35 +42,44 @@ class CreateRoomEvent extends RoomEvent {
 class InviteMemberEvent extends RoomEvent {
   @Expose({ name: "member" })
   @IsInstance(ChatRoomMember)
-  @Type(() => ChatRoomMember)
-  readonly member: ChatRoomMember
+  @Type(() => RueJaiUser)
+  readonly invitedUser: RueJaiUser
 
-  constructor(id: number, owner: Owner, createdAt: Date, member: ChatRoomMember) {
+  constructor(id: number, owner: Owner, createdAt: Date, invitedUser: RueJaiUser) {
     super(id, owner, createdAt)
 
-    this.member = member
+    this.invitedUser = invitedUser
+  }
+}
+
+class RueJaiUser {
+  @Expose({ name: "rue_jai_user_id" })
+  @IsString()
+  readonly rueJaiUserId: string
+
+  @Expose({ name: "rue_jai_user_type" })
+  @IsEnum(RueJaiUserType)
+  readonly rueJaiUserType: RueJaiUserType
+
+  constructor(rueJaiUserId: string, rueJaiUserType: RueJaiUserType) {
+    this.rueJaiUserId = rueJaiUserId
+    this.rueJaiUserType = rueJaiUserType
   }
 }
 
 class UpdateMemberRoleEvent extends RoomEvent {
   @Expose({ name: "updated_member_record_number" })
   @IsNumber()
-  readonly updatedMemberRecordNumber: number
+  readonly updatedMember: RueJaiUser
 
   @Expose({ name: "member_role" })
   @IsEnum(ChatRoomMemberRole)
   readonly memberRole: ChatRoomMemberRole
 
-  constructor(
-    id: number,
-    owner: Owner,
-    createdAt: Date,
-    updatedMemberRecordNumber: number,
-    memberRole: ChatRoomMemberRole
-  ) {
+  constructor(id: number, owner: Owner, createdAt: Date, updatedMember: RueJaiUser, memberRole: ChatRoomMemberRole) {
     super(id, owner, createdAt)
 
-    this.updatedMemberRecordNumber = updatedMemberRecordNumber
+    this.updatedMember = updatedMember
     this.memberRole = memberRole
   }
 }
@@ -76,13 +87,17 @@ class UpdateMemberRoleEvent extends RoomEvent {
 class RemoveMemberEvent extends RoomEvent {
   @Expose({ name: "removed_member_record_number" })
   @IsNumber()
-  readonly removedMemberRecordNumber: number
+  readonly removedMember: RueJaiUser
 
-  constructor(id: number, owner: Owner, createdAt: Date, removedMemberRecordNumber: number) {
+  constructor(id: number, owner: Owner, createdAt: Date, removedMember: RueJaiUser) {
     super(id, owner, createdAt)
 
-    this.removedMemberRecordNumber = removedMemberRecordNumber
+    this.removedMember = removedMember
+  }
+
+  get type(): EventType {
+    return EventType.REMOVE_MEMBER
   }
 }
 
-export { RoomEvent, CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent, RemoveMemberEvent }
+export { RoomEvent, CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent, RemoveMemberEvent, RueJaiUser }

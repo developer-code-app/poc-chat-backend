@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm"
 import { EventType } from "../models/events/eventType"
 import { RueJaiUserType } from "../models/rueJaiUserType"
 import { IsDate, IsEnum, IsNumber, IsObject, IsString } from "class-validator"
@@ -9,6 +9,7 @@ class RoomAndMessageEventEntity {
   @IsString()
   id!: string
 
+  @Index()
   @Column()
   @IsNumber()
   chatRoomId!: number
@@ -17,7 +18,7 @@ class RoomAndMessageEventEntity {
   @IsNumber()
   recordNumber!: number
 
-  @Column()
+  @Column({ default: () => "CURRENT_TIMESTAMP" })
   @IsDate()
   recordedAt!: Date
 
@@ -33,7 +34,7 @@ class RoomAndMessageEventEntity {
   @IsObject()
   content: unknown
 
-  @Column()
+  @Column({ default: () => "CURRENT_TIMESTAMP" })
   @IsDate()
   createdAt!: Date
 
