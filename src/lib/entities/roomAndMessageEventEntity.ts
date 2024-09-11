@@ -1,7 +1,8 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { EventType } from "../models/events/eventType"
 import { RueJaiUserType } from "../models/rueJaiUserType"
 import { IsDate, IsEnum, IsNumber, IsObject, IsString } from "class-validator"
+import { ChatRoomEntity } from "./chatRoomEntity"
 
 @Entity()
 class RoomAndMessageEventEntity {
@@ -10,9 +11,8 @@ class RoomAndMessageEventEntity {
   id!: string
 
   @Index()
-  @Column()
-  @IsNumber()
-  chatRoomId!: number
+  @ManyToOne(() => ChatRoomEntity, (chatRoom) => chatRoom.roomAndMessageEvents)
+  chatRoom!: ChatRoomEntity
 
   @Column()
   @IsNumber()

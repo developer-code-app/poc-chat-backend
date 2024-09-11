@@ -1,3 +1,4 @@
+import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity"
 import { AppDataSource } from "../dataSource"
 import { RueJaiUserEntity } from "../entities/rueJaiUserEntity"
 import { RueJaiUser } from "../models/rueJaiUser"
@@ -9,6 +10,33 @@ class RueJaiUserRepository {
     if (!AppDataSource.isInitialized) {
       throw new Error("Data source is not initialized")
     }
+  }
+
+  async isRueJaiUserExist(rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<boolean> {
+    const rueJaiUserEntity = await AppDataSource.getRepository(RueJaiUserEntity).findOne({
+      where: { rueJaiUserId, rueJaiUserType },
+    })
+
+    return !!rueJaiUserEntity
+  }
+
+  async getRueJaiUser(rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<RueJaiUser> {
+    const rueJaiUserEntity = await AppDataSource.getRepository(RueJaiUserEntity).findOne({
+      where: { rueJaiUserId, rueJaiUserType },
+    })
+
+    if (!rueJaiUserEntity) {
+      throw new Error(`RuaJai user not found: ID: ${rueJaiUserId}, Type: ${rueJaiUserType}`)
+    }
+
+    return new RueJaiUser(
+      rueJaiUserEntity.id,
+      rueJaiUserEntity.rueJaiUserId,
+      rueJaiUserEntity.rueJaiUserType,
+      rueJaiUserEntity.rueJaiUserRole,
+      rueJaiUserEntity.name,
+      rueJaiUserEntity.thumbnailUrl
+    )
   }
 
   async createRueJaiUser(
@@ -46,31 +74,40 @@ class RueJaiUserRepository {
     )
   }
 
-  async isRueJaiUserExist(rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<boolean> {
-    const rueJaiUserEntity = await AppDataSource.getRepository(RueJaiUserEntity).findOne({
-      where: { rueJaiUserId, rueJaiUserType },
-    })
+  async updateRueJaiUser(
+    rueJaiUserId: string,
+    rueJaiUserType: RueJaiUserType,
+    params: {
+      name?: string
+      thumbnailUrl?: string
+      rueJaiUserRole?: RueJaiUserRole
+      chatRoomIds?: number[]
+    }
+  ): Promise<void> {
+    const { name, thumbnailUrl, rueJaiUserRole, chatRoomIds } = params
+    const updateParams: QueryDeepPartialEntity<RueJaiUserEntity> = {}
 
-    return !!rueJaiUserEntity
-  }
-
-  async getRueJaiUser(rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<RueJaiUser> {
-    const rueJaiUserEntity = await AppDataSource.getRepository(RueJaiUserEntity).findOne({
-      where: { rueJaiUserId, rueJaiUserType },
-    })
-
-    if (!rueJaiUserEntity) {
-      throw new Error(`RuaJai user not found: ID: ${rueJaiUserId}, Type: ${rueJaiUserType}`)
+    if (name !== undefined) {
+      updateParams.name = name
     }
 
-    return new RueJaiUser(
-      rueJaiUserEntity.id,
-      rueJaiUserEntity.rueJaiUserId,
-      rueJaiUserEntity.rueJaiUserType,
-      rueJaiUserEntity.rueJaiUserRole,
-      rueJaiUserEntity.name,
-      rueJaiUserEntity.thumbnailUrl
-    )
+    if (thumbnailUrl !== undefined) {
+      updateParams.thumbnailUrl = thumbnailUrl
+    }
+
+    if (rueJaiUserRole !== undefined) {
+      updateParams.rueJaiUserRole = rueJaiUserRole
+    }
+
+    if (chatRoomIds !== undefined) {
+      updateParams.chatRooms = chatRoomIds.map((chatRoomId) => ({ id: chatRoomId }))
+    }
+
+    await AppDataSource.getRepository(RueJaiUserEntity).update({ rueJaiUserId, rueJaiUserType }, updateParams)
+  }
+
+  async deleteRueJaiUser(rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<void> {
+    await AppDataSource.getRepository(RueJaiUserEntity).delete({ rueJaiUserId, rueJaiUserType })
   }
 }
 

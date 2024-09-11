@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer"
-import { IsEnum, IsInstance, IsNumber, IsString } from "class-validator"
+import { IsEnum, IsInstance, IsNumber, IsOptional, IsString } from "class-validator"
 
 import { ChatRoomMember, ChatRoomMemberRole } from "../chatRoomMember"
 import { ChatRoomEvent } from "./chatRoomEvent"
@@ -14,28 +14,29 @@ class CreateRoomEvent extends RoomEvent {
   @IsString()
   readonly name: string
 
-  @Expose({ name: "thumbnail_url" })
-  @IsString()
-  readonly thumbnailUrl: string
-
   @Expose({ name: "members" })
   @IsInstance(ChatRoomMember, { each: true })
   @Type(() => ChatRoomMember)
   readonly members: ChatRoomMember[]
+
+  @Expose({ name: "thumbnail_url" })
+  @IsOptional()
+  @IsString()
+  readonly thumbnailUrl?: string
 
   constructor(
     id: number,
     owner: Owner,
     createdAt: Date,
     name: string,
-    thumbnailUrl: string,
-    members: ChatRoomMember[]
+    members: ChatRoomMember[],
+    thumbnailUrl?: string
   ) {
     super(id, owner, createdAt)
 
     this.name = name
-    this.thumbnailUrl = thumbnailUrl
     this.members = members
+    this.thumbnailUrl = thumbnailUrl
   }
 }
 

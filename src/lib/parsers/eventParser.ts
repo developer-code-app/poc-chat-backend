@@ -156,13 +156,13 @@ const eventFromEntity = (entity: RoomAndMessageEventEntity): RecordedEvent => {
       break
     }
     case EventType.CREATE_ROOM: {
-      const { name, thumbnailUrl, members } = content as {
+      const { name, members, thumbnailUrl } = content as {
         name: string
-        thumbnailUrl: string
         members: ChatRoomMember[]
+        thumbnailUrl?: string
       }
 
-      event = new CreateRoomEvent(eventId, owner, createdAt, name, thumbnailUrl, members)
+      event = new CreateRoomEvent(eventId, owner, createdAt, name, members, thumbnailUrl)
 
       break
     }
@@ -223,9 +223,9 @@ const eventEntityContentFromEvent = (event: ChatRoomEvent): unknown => {
       return { lastReadMessageAddedByEventRecordNumber }
     }
     case EventType.CREATE_ROOM: {
-      const { name, thumbnailUrl, members } = event as CreateRoomEvent
+      const { name, members, thumbnailUrl } = event as CreateRoomEvent
 
-      return { name, thumbnailUrl, members }
+      return { name, members, thumbnailUrl }
     }
     case EventType.INVITE_MEMBER: {
       const { invitedUser } = event as InviteMemberEvent
