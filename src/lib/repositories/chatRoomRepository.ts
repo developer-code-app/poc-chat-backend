@@ -2,7 +2,6 @@ import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity
 import { AppDataSource } from "../dataSource"
 import { ChatRoomEntity } from "../entities/chatRoomEntity"
 import { ChatRoom } from "../models/chatRoom"
-import { RueJaiUserType } from "../models/rueJaiUserType"
 
 class ChatRoomRepository {
   constructor() {
@@ -37,10 +36,9 @@ class ChatRoomRepository {
     params: {
       name?: string
       thumbnailUrl?: string
-      rueJaiUserIds?: { rueJaiUserId: string; rueJaiUserType: RueJaiUserType }[]
     }
   ) {
-    const { name, thumbnailUrl, rueJaiUserIds } = params
+    const { name, thumbnailUrl } = params
     const updateParams: QueryDeepPartialEntity<ChatRoomEntity> = {}
 
     if (name !== undefined) {
@@ -49,10 +47,6 @@ class ChatRoomRepository {
 
     if (thumbnailUrl !== undefined) {
       updateParams.thumbnailUrl = thumbnailUrl
-    }
-
-    if (rueJaiUserIds !== undefined) {
-      updateParams.rueJaiUsers = rueJaiUserIds
     }
 
     await AppDataSource.getRepository(ChatRoomEntity).update(chatRoomId, updateParams)

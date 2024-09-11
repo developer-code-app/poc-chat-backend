@@ -81,10 +81,9 @@ class RueJaiUserRepository {
       name?: string
       thumbnailUrl?: string
       rueJaiUserRole?: RueJaiUserRole
-      chatRoomIds?: number[]
     }
   ): Promise<void> {
-    const { name, thumbnailUrl, rueJaiUserRole, chatRoomIds } = params
+    const { name, thumbnailUrl, rueJaiUserRole } = params
     const updateParams: QueryDeepPartialEntity<RueJaiUserEntity> = {}
 
     if (name !== undefined) {
@@ -97,10 +96,6 @@ class RueJaiUserRepository {
 
     if (rueJaiUserRole !== undefined) {
       updateParams.rueJaiUserRole = rueJaiUserRole
-    }
-
-    if (chatRoomIds !== undefined) {
-      updateParams.chatRooms = chatRoomIds.map((chatRoomId) => ({ id: chatRoomId }))
     }
 
     await AppDataSource.getRepository(RueJaiUserEntity).update({ rueJaiUserId, rueJaiUserType }, updateParams)

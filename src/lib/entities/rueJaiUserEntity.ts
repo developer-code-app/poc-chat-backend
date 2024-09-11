@@ -1,9 +1,10 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 import { RueJaiUserType } from "../models/rueJaiUserType"
 import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator"
 import { ChatRoomEntity } from "./chatRoomEntity"
 import { RueJaiUserRole } from "../models/rueJaiUserRole"
+import { ChatRoomMemberEntity } from "./chatRoomMemberEntity"
 
 @Entity()
 class RueJaiUserEntity {
@@ -36,9 +37,13 @@ class RueJaiUserEntity {
   @IsString()
   thumbnailUrl?: string
 
-  @ManyToMany(() => ChatRoomEntity)
+  @OneToMany(() => ChatRoomMemberEntity, (chatRoomMember) => chatRoomMember.rueJaiUser)
   @JoinTable()
-  chatRooms!: ChatRoomEntity[]
+  chatRoomMembers!: ChatRoomMemberEntity[]
+
+  get chatRooms(): ChatRoomEntity[] {
+    return this.chatRoomMembers.map((chatRoomMember) => chatRoomMember.chatRoom)
+  }
 }
 
 export { RueJaiUserEntity }

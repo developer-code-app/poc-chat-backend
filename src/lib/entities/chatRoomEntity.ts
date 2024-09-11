@@ -2,6 +2,7 @@ import { IsNumber, IsOptional, IsString } from "class-validator"
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { RoomAndMessageEventEntity } from "./roomAndMessageEventEntity"
 import { RueJaiUserEntity } from "./rueJaiUserEntity"
+import { ChatRoomMemberEntity } from "./chatRoomMemberEntity"
 
 @Entity()
 class ChatRoomEntity {
@@ -23,7 +24,11 @@ class ChatRoomEntity {
 
   @ManyToMany(() => RueJaiUserEntity, (rueJaiUser) => rueJaiUser.chatRooms)
   @JoinTable()
-  rueJaiUsers!: RueJaiUserEntity[]
+  chatRoomMembers!: ChatRoomMemberEntity[]
+
+  get rueJaiUsers(): RueJaiUserEntity[] {
+    return this.chatRoomMembers.map((chatRoomMember) => chatRoomMember.rueJaiUser)
+  }
 }
 
 export { ChatRoomEntity }
