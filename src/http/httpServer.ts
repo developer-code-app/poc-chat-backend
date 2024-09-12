@@ -7,9 +7,9 @@ class HttpServer {
 
   start(port: string) {
     this.setupRoutes()
-    this.app.listen(port, () => {
+    this.app.listen(parseInt(port), "0.0.0.0", () => {
       // eslint-disable-next-line no-console
-      console.log(`Http Server is running on http://localhost:${port}`)
+      console.log(`Http Server is running on http://0.0.0.0:${port}`)
     })
   }
 

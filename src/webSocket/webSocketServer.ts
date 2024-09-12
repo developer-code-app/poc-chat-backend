@@ -16,7 +16,7 @@ class WebSocketServer {
     this.setupWebSocketServer()
 
     // eslint-disable-next-line no-console
-    console.log(`WebSocket server started at ws://localhost:${port}`)
+    console.log(`WebSocket server started at ws://0.0.0.0:${port}`)
   }
 
   isActive(): boolean {
@@ -24,7 +24,7 @@ class WebSocketServer {
   }
 
   private initializeWebSocketServer(port: string) {
-    this._server = new Server({ port: parseInt(port) })
+    this._server = new Server({ host: "0.0.0.0", port: parseInt(port) })
   }
 
   private setupWebSocketServer() {
