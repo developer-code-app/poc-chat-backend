@@ -1,5 +1,7 @@
 import { AppDataSource } from "./dataSource"
 import { ChatRoom } from "./models/chatRoom"
+import { CreateTextMessageEvent, DeleteMessageEvent } from "./models/events/messageEvent"
+import { ReadMessageEvent } from "./models/events/readEvent"
 import { CreateRoomEvent, InviteMemberEvent, RemoveMemberEvent, UpdateMemberRoleEvent } from "./models/events/roomEvent"
 import { ChatRoomMemberRepository } from "./repositories/chatRoomMemberRepository"
 import { ChatRoomRepository } from "./repositories/chatRoomRepository"
@@ -17,7 +19,7 @@ class ChatService {
     await queryRunner.startTransaction()
 
     const chatRoom = await this.chatRoomRepository.createChatRoom(event.name, event.thumbnailUrl)
-    await this.eventRepository.saveChatRoomEvent(chatRoom.id, event)
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoom.id, event)
 
     await queryRunner.commitTransaction()
 
@@ -49,7 +51,7 @@ class ChatService {
       0
     )
 
-    await this.eventRepository.saveChatRoomEvent(chatRoomId, event)
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
   }
@@ -68,7 +70,7 @@ class ChatService {
       throw new Error("Chatroom member not found")
     }
 
-    await this.eventRepository.saveChatRoomEvent(chatRoomId, event)
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
   }
@@ -85,7 +87,124 @@ class ChatService {
 
     await this.chatRoomMemberRepository.deleteChatRoomMember(chatRoomId, rueJaiUserId, rueJaiUserType)
 
-    await this.eventRepository.saveChatRoomEvent(chatRoomId, event)
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async createTextMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async createTextReplyMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async createPhotoMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async createVideoMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async createFileMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async editTextMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async deleteMessage(chatRoomId: number, event: DeleteMessageEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async readMessage(chatRoomId: number, event: ReadMessageEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (
+      !(await this.chatRoomMemberRepository.isChatRoomMemberExist(
+        chatRoomId,
+        event.owner.rueJaiUserId,
+        event.owner.rueJaiUserType
+      ))
+    ) {
+      throw new Error("Chatroom member not found")
+    }
+
+    await this.chatRoomMemberRepository.updateChatRoomMember(
+      chatRoomId,
+      event.owner.rueJaiUserId,
+      event.owner.rueJaiUserType,
+      {
+        lastReadMessageRecordNumber: event.lastReadMessageAddedByEventRecordNumber,
+      }
+    )
 
     await queryRunner.commitTransaction()
   }

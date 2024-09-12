@@ -11,7 +11,7 @@ class EventRepository {
     }
   }
 
-  async saveChatRoomEvent(chatRoomId: number, event: ChatRoomEvent): Promise<void> {
+  async saveRoomAndMessageEvent(chatRoomId: number, event: ChatRoomEvent): Promise<void> {
     await AppDataSource.transaction(async (entityManager) => {
       const recordNumber = (await this.getLatestRoomAndMessageEventRecordNumber(chatRoomId)) + 1
       const content = eventEntityContentFromEvent(event)
