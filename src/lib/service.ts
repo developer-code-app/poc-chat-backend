@@ -1,6 +1,6 @@
 import { AppDataSource } from "./dataSource"
 import { ChatRoom } from "./models/chatRoom"
-import { CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent } from "./models/events/roomEvent"
+import { CreateRoomEvent, InviteMemberEvent, RemoveMemberEvent, UpdateMemberRoleEvent } from "./models/events/roomEvent"
 import { ChatRoomMemberRepository } from "./repositories/chatRoomMemberRepository"
 import { ChatRoomRepository } from "./repositories/chatRoomRepository"
 import { EventRepository } from "./repositories/EventRepository"
@@ -54,9 +54,38 @@ class ChatService {
     await queryRunner.commitTransaction()
   }
 
-  async updateMemberRole(_: number, _event: UpdateMemberRoleEvent) {
+  async updateMemberRole(chatRoomId: number, event: UpdateMemberRoleEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
+
+    if (
+      !(await this.chatRoomMemberRepository.isChatRoomMemberExist(
+        chatRoomId,
+        event.updatedMember.rueJaiUserId,
+        event.updatedMember.rueJaiUserType
+      ))
+    ) {
+      throw new Error("Chatroom member not found")
+    }
+
+    await this.eventRepository.saveChatRoomEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async removeMember(chatRoomId: number, event: RemoveMemberEvent) {
+    const { rueJaiUserId, rueJaiUserType } = event.removedMember
+
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (!(await this.chatRoomMemberRepository.isChatRoomMemberExist(chatRoomId, rueJaiUserId, rueJaiUserType))) {
+      throw new Error("Chatroom member not found")
+    }
+
+    await this.chatRoomMemberRepository.deleteChatRoomMember(chatRoomId, rueJaiUserId, rueJaiUserType)
+
+    await this.eventRepository.saveChatRoomEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
   }

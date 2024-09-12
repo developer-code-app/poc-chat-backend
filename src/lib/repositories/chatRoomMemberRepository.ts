@@ -12,28 +12,26 @@ class ChatRoomMemberRepository {
     }
   }
 
-  async isChatRoomMemberExist(rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<boolean> {
-    const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity)
-      .createQueryBuilder("member")
-      .leftJoinAndSelect("member.rueJaiUser", "rueJaiUser")
-      .where("member.rueJaiUserId = :rueJaiUserId AND member.rueJaiUserType = :rueJaiUserType", {
-        rueJaiUserId,
-        rueJaiUserType,
-      })
-      .getOne()
+  async isChatRoomMemberExist(
+    chatRoomId: number,
+    rueJaiUserId: string,
+    rueJaiUserType: RueJaiUserType
+  ): Promise<boolean> {
+    const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity).findOne({
+      where: { chatRoom: { id: chatRoomId }, rueJaiUser: { rueJaiUserId, rueJaiUserType } },
+    })
 
     return !!chatRoomMemberEntity
   }
 
-  async getChatRoomMember(rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<ChatRoomMember> {
-    const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity)
-      .createQueryBuilder("member")
-      .leftJoinAndSelect("member.rueJaiUser", "rueJaiUser")
-      .where("member.rueJaiUserId = :rueJaiUserId AND member.rueJaiUserType = :rueJaiUserType", {
-        rueJaiUserId,
-        rueJaiUserType,
-      })
-      .getOneOrFail()
+  async getChatRoomMember(
+    chatRoomId: number,
+    rueJaiUserId: string,
+    rueJaiUserType: RueJaiUserType
+  ): Promise<ChatRoomMember> {
+    const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity).findOneOrFail({
+      where: { chatRoom: { id: chatRoomId }, rueJaiUser: { rueJaiUserId, rueJaiUserType } },
+    })
 
     return new ChatRoomMember(
       chatRoomMemberEntity.id,
@@ -69,6 +67,7 @@ class ChatRoomMemberRepository {
   }
 
   async updateChatRoomMember(
+    chatRoomId: number,
     rueJaiUserId: string,
     rueJaiUserType: RueJaiUserType,
     params: {
@@ -88,13 +87,13 @@ class ChatRoomMemberRepository {
     }
 
     await AppDataSource.getRepository(ChatRoomMemberEntity).update(
-      { rueJaiUser: { rueJaiUserId, rueJaiUserType } },
+      { chatRoom: { id: chatRoomId }, rueJaiUser: { rueJaiUserId, rueJaiUserType } },
       updateParams
     )
   }
 
-  async deleteChatRoomMember(rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<void> {
-    const chatRoomMemberEntity = await this.getChatRoomMember(rueJaiUserId, rueJaiUserType)
+  async deleteChatRoomMember(chatRoomId: number, rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<void> {
+    const chatRoomMemberEntity = await this.getChatRoomMember(chatRoomId, rueJaiUserId, rueJaiUserType)
 
     await AppDataSource.getRepository(ChatRoomMemberEntity).delete(chatRoomMemberEntity)
   }
