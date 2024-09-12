@@ -24,7 +24,7 @@ class ChatRoomEntity {
   @Column()
   @IsOptional()
   @IsString()
-  thumbnailUrl: string | undefined
+  thumbnailUrl?: string
 
   get rueJaiUsers(): RueJaiUserEntity[] {
     return this.chatRoomMembers.map((chatRoomMember) => chatRoomMember.rueJaiUser)

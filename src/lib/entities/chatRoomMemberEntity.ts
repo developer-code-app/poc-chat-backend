@@ -1,10 +1,11 @@
-import { Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 
 import { ChatRoomEntity } from "./chatRoomEntity"
 import { RueJaiUserEntity } from "./rueJaiUserEntity"
 import { ChatRoomMemberRole } from "../models/chatRoomMemberRole"
 import { IsEnum, IsNumber, IsOptional } from "class-validator"
 
+@Entity()
 class ChatRoomMemberEntity {
   @PrimaryGeneratedColumn()
   @IsNumber()
@@ -19,7 +20,7 @@ class ChatRoomMemberEntity {
   @Column({
     type: "enum",
     enum: ChatRoomMemberRole,
-    default: () => ChatRoomMemberRole.MEMBER,
+    default: ChatRoomMemberRole.MEMBER,
   })
   @IsEnum(ChatRoomMemberRole)
   role!: ChatRoomMemberRole
@@ -27,7 +28,7 @@ class ChatRoomMemberEntity {
   @Column()
   @IsOptional()
   @IsNumber()
-  lastReadMessageRecordNumber: number | undefined
+  lastReadMessageRecordNumber?: number
 }
 
 export { ChatRoomMemberEntity }

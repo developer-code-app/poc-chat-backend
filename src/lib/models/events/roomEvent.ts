@@ -58,6 +58,10 @@ class CreateRoomEvent extends RoomEvent {
     this.members = members
     this.thumbnailUrl = thumbnailUrl
   }
+
+  get type() {
+    return EventType.CREATE_ROOM
+  }
 }
 
 class InviteMemberEvent extends RoomEvent {
@@ -70,6 +74,10 @@ class InviteMemberEvent extends RoomEvent {
     super(id, owner, createdAt)
 
     this.invitedMember = invitedMember
+  }
+
+  get type() {
+    return EventType.INVITE_MEMBER
   }
 }
 
@@ -93,6 +101,10 @@ class UpdateMemberRoleEvent extends RoomEvent {
 
     this.updatedMember = updatedMember
     this.memberRole = memberRole
+  }
+
+  get type() {
+    return EventType.EDIT_MEMBER_ROLE
   }
 }
 

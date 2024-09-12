@@ -19,12 +19,16 @@ class RueJaiUserEntity {
   @Column({
     type: "enum",
     enum: RueJaiUserType,
-    default: () => RueJaiUserType.RUE_JAI_APP_USER,
+    default: RueJaiUserType.RUE_JAI_APP_USER,
   })
   @IsEnum(RueJaiUserType)
   rueJaiUserType!: RueJaiUserType
 
-  @Column({ type: "enum", enum: RueJaiUserRole, default: () => RueJaiUserRole.HOME_OWNER })
+  @Column({
+    type: "enum",
+    enum: RueJaiUserRole,
+    default: RueJaiUserRole.HOME_OWNER,
+  })
   @IsEnum(RueJaiUserRole)
   rueJaiUserRole!: RueJaiUserRole
 

@@ -8,6 +8,7 @@ import { RueJaiUserEntity } from "./entities/rueJaiUserEntity"
 import { ChatRoomEntity } from "./entities/chatRoomEntity"
 import dotenv from "dotenv"
 import { validateSync } from "class-validator"
+import { ChatRoomMemberEntity } from "./entities/chatRoomMemberEntity"
 
 function loadDatabaseConfig(): DatabaseConfig {
   dotenv.config()
@@ -32,7 +33,7 @@ const AppDataSource = new DataSource({
   database: databaseConfig.database,
   synchronize: true,
   logging: false,
-  entities: [RoomAndMessageEventEntity, RueJaiUserEntity, ChatRoomEntity],
+  entities: [RoomAndMessageEventEntity, RueJaiUserEntity, ChatRoomEntity, ChatRoomMemberEntity],
   migrations: [],
   subscribers: [],
 })
