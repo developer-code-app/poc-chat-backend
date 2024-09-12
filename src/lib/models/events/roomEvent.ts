@@ -1,11 +1,31 @@
 import { Expose, Type } from "class-transformer"
 import { IsEnum, IsInstance, IsNumber, IsOptional, IsString } from "class-validator"
 
-import { ChatRoomMember, ChatRoomMemberRole } from "../chatRoomMember"
+import { ChatRoomMemberRole } from "../chatRoomMember"
 import { ChatRoomEvent } from "./chatRoomEvent"
 import { Owner } from "./owner"
 import { RueJaiUserType } from "../rueJaiUserType"
 import { EventType } from "./eventType"
+
+class EventChatRoomMember {
+  @Expose({ name: "role" })
+  @IsEnum(ChatRoomMemberRole)
+  readonly role: ChatRoomMemberRole
+
+  @Expose({ name: "rue_jai_user_id" })
+  @IsString()
+  readonly rueJaiUserId: string
+
+  @Expose({ name: "rue_jai_user_type" })
+  @IsEnum(RueJaiUserType)
+  readonly rueJaiUserType: RueJaiUserType
+
+  constructor(role: ChatRoomMemberRole, rueJaiUserId: string, rueJaiUserType: RueJaiUserType) {
+    this.role = role
+    this.rueJaiUserId = rueJaiUserId
+    this.rueJaiUserType = rueJaiUserType
+  }
+}
 
 abstract class RoomEvent extends ChatRoomEvent {}
 
@@ -15,9 +35,9 @@ class CreateRoomEvent extends RoomEvent {
   readonly name: string
 
   @Expose({ name: "members" })
-  @IsInstance(ChatRoomMember, { each: true })
-  @Type(() => ChatRoomMember)
-  readonly members: ChatRoomMember[]
+  @IsInstance(EventChatRoomMember, { each: true })
+  @Type(() => EventChatRoomMember)
+  readonly members: EventChatRoomMember[]
 
   @Expose({ name: "thumbnail_url" })
   @IsOptional()
@@ -29,7 +49,7 @@ class CreateRoomEvent extends RoomEvent {
     owner: Owner,
     createdAt: Date,
     name: string,
-    members: ChatRoomMember[],
+    members: EventChatRoomMember[],
     thumbnailUrl?: string
   ) {
     super(id, owner, createdAt)
@@ -42,42 +62,33 @@ class CreateRoomEvent extends RoomEvent {
 
 class InviteMemberEvent extends RoomEvent {
   @Expose({ name: "member" })
-  @IsInstance(ChatRoomMember)
-  @Type(() => RueJaiUser)
-  readonly invitedUser: RueJaiUser
+  @IsInstance(EventChatRoomMember)
+  @Type(() => EventChatRoomMember)
+  readonly invitedMember: EventChatRoomMember
 
-  constructor(id: number, owner: Owner, createdAt: Date, invitedUser: RueJaiUser) {
+  constructor(id: number, owner: Owner, createdAt: Date, invitedMember: EventChatRoomMember) {
     super(id, owner, createdAt)
 
-    this.invitedUser = invitedUser
-  }
-}
-
-class RueJaiUser {
-  @Expose({ name: "rue_jai_user_id" })
-  @IsString()
-  readonly rueJaiUserId: string
-
-  @Expose({ name: "rue_jai_user_type" })
-  @IsEnum(RueJaiUserType)
-  readonly rueJaiUserType: RueJaiUserType
-
-  constructor(rueJaiUserId: string, rueJaiUserType: RueJaiUserType) {
-    this.rueJaiUserId = rueJaiUserId
-    this.rueJaiUserType = rueJaiUserType
+    this.invitedMember = invitedMember
   }
 }
 
 class UpdateMemberRoleEvent extends RoomEvent {
   @Expose({ name: "updated_member_record_number" })
   @IsNumber()
-  readonly updatedMember: RueJaiUser
+  readonly updatedMember: EventChatRoomMember
 
   @Expose({ name: "member_role" })
   @IsEnum(ChatRoomMemberRole)
   readonly memberRole: ChatRoomMemberRole
 
-  constructor(id: number, owner: Owner, createdAt: Date, updatedMember: RueJaiUser, memberRole: ChatRoomMemberRole) {
+  constructor(
+    id: number,
+    owner: Owner,
+    createdAt: Date,
+    updatedMember: EventChatRoomMember,
+    memberRole: ChatRoomMemberRole
+  ) {
     super(id, owner, createdAt)
 
     this.updatedMember = updatedMember
@@ -88,9 +99,9 @@ class UpdateMemberRoleEvent extends RoomEvent {
 class RemoveMemberEvent extends RoomEvent {
   @Expose({ name: "removed_member_record_number" })
   @IsNumber()
-  readonly removedMember: RueJaiUser
+  readonly removedMember: EventChatRoomMember
 
-  constructor(id: number, owner: Owner, createdAt: Date, removedMember: RueJaiUser) {
+  constructor(id: number, owner: Owner, createdAt: Date, removedMember: EventChatRoomMember) {
     super(id, owner, createdAt)
 
     this.removedMember = removedMember
@@ -101,4 +112,4 @@ class RemoveMemberEvent extends RoomEvent {
   }
 }
 
-export { RoomEvent, CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent, RemoveMemberEvent, RueJaiUser }
+export { RoomEvent, CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent, RemoveMemberEvent, EventChatRoomMember }

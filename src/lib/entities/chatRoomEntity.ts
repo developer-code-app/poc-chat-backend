@@ -10,6 +10,13 @@ class ChatRoomEntity {
   @IsNumber()
   id!: number
 
+  @OneToMany(() => RoomAndMessageEventEntity, (roomAndMessageEvent) => roomAndMessageEvent.chatRoom)
+  roomAndMessageEvents!: RoomAndMessageEventEntity[]
+
+  @ManyToMany(() => RueJaiUserEntity, (rueJaiUser) => rueJaiUser.chatRooms)
+  @JoinTable()
+  chatRoomMembers!: ChatRoomMemberEntity[]
+
   @Column()
   @IsString()
   name!: string
@@ -18,13 +25,6 @@ class ChatRoomEntity {
   @IsOptional()
   @IsString()
   thumbnailUrl: string | undefined
-
-  @OneToMany(() => RoomAndMessageEventEntity, (roomAndMessageEvent) => roomAndMessageEvent.chatRoom)
-  roomAndMessageEvents!: RoomAndMessageEventEntity[]
-
-  @ManyToMany(() => RueJaiUserEntity, (rueJaiUser) => rueJaiUser.chatRooms)
-  @JoinTable()
-  chatRoomMembers!: ChatRoomMemberEntity[]
 
   get rueJaiUsers(): RueJaiUserEntity[] {
     return this.chatRoomMembers.map((chatRoomMember) => chatRoomMember.rueJaiUser)

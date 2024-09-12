@@ -10,23 +10,26 @@ class ChatRoomRepository {
     }
   }
 
+  async isChatRoomExist(chatRoomId: number): Promise<boolean> {
+    const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOne({
+      where: { id: chatRoomId },
+    })
+
+    return !!chatRoomEntity
+  }
+
+  async getChatRoom(chatRoomId: number): Promise<ChatRoom> {
+    const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOneOrFail({
+      where: { id: chatRoomId },
+    })
+
+    return new ChatRoom(chatRoomEntity.id)
+  }
   async createChatRoom(name: string, thumbnailUrl?: string): Promise<ChatRoom> {
     const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).save({
       name,
       thumbnailUrl,
     })
-
-    return new ChatRoom(chatRoomEntity.id)
-  }
-
-  async getChatRoom(chatRoomId: number): Promise<ChatRoom> {
-    const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOne({
-      where: { id: chatRoomId },
-    })
-
-    if (!chatRoomEntity) {
-      throw new Error("Chat room not found")
-    }
 
     return new ChatRoom(chatRoomEntity.id)
   }

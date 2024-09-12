@@ -21,13 +21,9 @@ class RueJaiUserRepository {
   }
 
   async getRueJaiUser(rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<RueJaiUser> {
-    const rueJaiUserEntity = await AppDataSource.getRepository(RueJaiUserEntity).findOne({
+    const rueJaiUserEntity = await AppDataSource.getRepository(RueJaiUserEntity).findOneOrFail({
       where: { rueJaiUserId, rueJaiUserType },
     })
-
-    if (!rueJaiUserEntity) {
-      throw new Error(`RuaJai user not found: ID: ${rueJaiUserId}, Type: ${rueJaiUserType}`)
-    }
 
     return new RueJaiUser(
       rueJaiUserEntity.id,

@@ -17,13 +17,12 @@ import {
   CreateRoomEvent,
   InviteMemberEvent,
   RemoveMemberEvent,
-  RueJaiUser,
+  EventChatRoomMember,
   UpdateMemberRoleEvent,
 } from "../models/events/roomEvent"
 import { RecordedEvent } from "../models/events/recordedEvent"
 import { RoomAndMessageEventEntity } from "../entities/roomAndMessageEventEntity"
 import { Owner } from "../models/events/owner"
-import { ChatRoomMember } from "../models/chatRoomMember"
 
 const eventFromObject = (obj: unknown): ChatRoomEvent => {
   const { type } = obj as { type: string }
@@ -158,7 +157,7 @@ const eventFromEntity = (entity: RoomAndMessageEventEntity): RecordedEvent => {
     case EventType.CREATE_ROOM: {
       const { name, members, thumbnailUrl } = content as {
         name: string
-        members: ChatRoomMember[]
+        members: EventChatRoomMember[]
         thumbnailUrl?: string
       }
 
@@ -167,9 +166,9 @@ const eventFromEntity = (entity: RoomAndMessageEventEntity): RecordedEvent => {
       break
     }
     case EventType.INVITE_MEMBER: {
-      const { invitedUser } = content as { invitedUser: RueJaiUser }
+      const { invitedMember } = content as { invitedMember: EventChatRoomMember }
 
-      event = new InviteMemberEvent(eventId, owner, createdAt, invitedUser)
+      event = new InviteMemberEvent(eventId, owner, createdAt, invitedMember)
 
       break
     }
@@ -228,9 +227,9 @@ const eventEntityContentFromEvent = (event: ChatRoomEvent): unknown => {
       return { name, members, thumbnailUrl }
     }
     case EventType.INVITE_MEMBER: {
-      const { invitedUser } = event as InviteMemberEvent
+      const { invitedMember } = event as InviteMemberEvent
 
-      return { invitedUser }
+      return { invitedMember }
     }
     case EventType.EDIT_MEMBER_ROLE: {
       const { updatedMember } = event as UpdateMemberRoleEvent

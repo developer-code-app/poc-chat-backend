@@ -1,20 +1,65 @@
-// import { AppDataSource } from "./dataSource"
-// import { ChatRoomEntity } from "./entities/chatRoomEntity"
-// import { RueJaiUserEntity } from "./entities/rueJaiUserEntity"
-// import { ChatRoom } from "./models/chatRoom"
-// import { CreateRoomEvent, InviteMemberEvent, RemoveMemberEvent } from "./models/events/roomManagementEvent"
-// import { RueJaiUser } from "./models/rueJaiUser"
+import { AppDataSource } from "./dataSource"
+import { ChatRoom } from "./models/chatRoom"
+import { CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent } from "./models/events/roomEvent"
+import { ChatRoomMemberRepository } from "./repositories/chatRoomMemberRepository"
+import { ChatRoomRepository } from "./repositories/chatRoomRepository"
+import { EventRepository } from "./repositories/EventRepository"
+import { RueJaiUserRepository } from "./repositories/rueJaiUserRepository"
 
-// class ChatService {
-//   ar
+class ChatService {
+  private chatRoomRepository = new ChatRoomRepository()
+  private eventRepository = new EventRepository()
+  private rueJaiUserRepository = new RueJaiUserRepository()
+  private chatRoomMemberRepository = new ChatRoomMemberRepository()
 
-//   createChatRoom(rueJaiUser: RueJaiUser, event: CreateRoomEvent): ChatRoom {
-//     const chatRoom = this.chatRoomRepository.create()
-//   }
+  async createChatRoom(event: CreateRoomEvent): Promise<ChatRoom> {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
 
-//   inviteMember(event: InviteMemberEvent) {}
+    const chatRoom = await this.chatRoomRepository.createChatRoom(event.name, event.thumbnailUrl)
+    await this.eventRepository.saveChatRoomEvent(chatRoom.id, event)
 
-//   removeMember(event: RemoveMemberEvent) {}
-// }
+    await queryRunner.commitTransaction()
 
-// export { ChatService }
+    return chatRoom
+  }
+
+  async inviteMember(chatRoomId: number, event: InviteMemberEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    if (
+      !(await this.rueJaiUserRepository.isRueJaiUserExist(
+        event.invitedMember.rueJaiUserId,
+        event.invitedMember.rueJaiUserType
+      ))
+    ) {
+      throw new Error("RueJai User not found")
+    }
+
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.chatRoomMemberRepository.createChatRoomMember(
+      chatRoomId,
+      event.invitedMember.rueJaiUserId,
+      event.invitedMember.rueJaiUserType,
+      event.invitedMember.role,
+      0
+    )
+
+    await this.eventRepository.saveChatRoomEvent(chatRoomId, event)
+
+    await queryRunner.commitTransaction()
+  }
+
+  async updateMemberRole(_: number, _event: UpdateMemberRoleEvent) {
+    const queryRunner = AppDataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    await queryRunner.commitTransaction()
+  }
+}
+
+export { ChatService }

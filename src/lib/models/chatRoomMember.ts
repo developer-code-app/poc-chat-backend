@@ -9,21 +9,21 @@ class ChatRoomMember {
   @IsNumber()
   readonly id: number
 
-  @Expose({ name: "role" })
-  @IsEnum(ChatRoomMemberRole)
-  readonly role: ChatRoomMemberRole
-
   @Expose({ name: "rue_jai_user" })
   @IsInstance(RueJaiUser)
   readonly rueJaiUser: RueJaiUser
 
+  @Expose({ name: "role" })
+  @IsEnum(ChatRoomMemberRole)
+  readonly role: ChatRoomMemberRole
+
   @Expose({ name: "last_read_message_record_number" })
   readonly lastReadMessageRecordNumber: number | undefined
 
-  constructor(id: number, role: ChatRoomMemberRole, rueJaiUser: RueJaiUser, lastReadMessageRecordNumber: number) {
+  constructor(id: number, rueJaiUser: RueJaiUser, role: ChatRoomMemberRole, lastReadMessageRecordNumber?: number) {
     this.id = id
-    this.role = role
     this.rueJaiUser = rueJaiUser
+    this.role = role
     this.lastReadMessageRecordNumber = lastReadMessageRecordNumber
   }
 }
