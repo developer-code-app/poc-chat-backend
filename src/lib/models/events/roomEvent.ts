@@ -45,7 +45,7 @@ class CreateRoomEvent extends RoomEvent {
   readonly thumbnailUrl?: string
 
   constructor(
-    id: number,
+    id: string,
     owner: Owner,
     createdAt: Date,
     name: string,
@@ -70,7 +70,7 @@ class InviteMemberEvent extends RoomEvent {
   @Type(() => EventChatRoomMember)
   readonly invitedMember: EventChatRoomMember
 
-  constructor(id: number, owner: Owner, createdAt: Date, invitedMember: EventChatRoomMember) {
+  constructor(id: string, owner: Owner, createdAt: Date, invitedMember: EventChatRoomMember) {
     super(id, owner, createdAt)
 
     this.invitedMember = invitedMember
@@ -91,7 +91,7 @@ class UpdateMemberRoleEvent extends RoomEvent {
   readonly memberRole: ChatRoomMemberRole
 
   constructor(
-    id: number,
+    id: string,
     owner: Owner,
     createdAt: Date,
     updatedMember: EventChatRoomMember,
@@ -113,7 +113,7 @@ class RemoveMemberEvent extends RoomEvent {
   @IsNumber()
   readonly removedMember: EventChatRoomMember
 
-  constructor(id: number, owner: Owner, createdAt: Date, removedMember: EventChatRoomMember) {
+  constructor(id: string, owner: Owner, createdAt: Date, removedMember: EventChatRoomMember) {
     super(id, owner, createdAt)
 
     this.removedMember = removedMember

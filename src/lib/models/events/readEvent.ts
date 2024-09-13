@@ -10,7 +10,7 @@ class ReadMessageEvent extends ChatRoomEvent {
   @IsNumber()
   readonly lastReadMessageAddedByEventRecordNumber: number
 
-  constructor(id: number, owner: Owner, createdAt: Date, lastReadMessageAddedByEventRecordNumber: number) {
+  constructor(id: string, owner: Owner, createdAt: Date, lastReadMessageAddedByEventRecordNumber: number) {
     super(id, owner, createdAt)
 
     this.lastReadMessageAddedByEventRecordNumber = lastReadMessageAddedByEventRecordNumber

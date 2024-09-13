@@ -14,7 +14,7 @@ abstract class UpdateMessageEvent extends MessageEvent {
   @IsNumber()
   readonly updatedMessageAddedByEventRecordNumber: number
 
-  constructor(id: number, owner: Owner, createdAt: Date, updatedMessageAddedByEventRecordNumber: number) {
+  constructor(id: string, owner: Owner, createdAt: Date, updatedMessageAddedByEventRecordNumber: number) {
     super(id, owner, createdAt)
 
     this.updatedMessageAddedByEventRecordNumber = updatedMessageAddedByEventRecordNumber
@@ -26,7 +26,7 @@ class CreateTextMessageEvent extends CreateMessageEvent {
   @IsString()
   readonly text: string
 
-  constructor(id: number, owner: Owner, createdAt: Date, text: string) {
+  constructor(id: string, owner: Owner, createdAt: Date, text: string) {
     super(id, owner, createdAt)
 
     this.text = text
@@ -46,7 +46,7 @@ class CreateTextReplyMessageEvent extends CreateMessageEvent {
   @IsString()
   readonly text: string
 
-  constructor(id: number, owner: Owner, createdAt: Date, repliedMessageAddedByEventRecordNumber: number, text: string) {
+  constructor(id: string, owner: Owner, createdAt: Date, repliedMessageAddedByEventRecordNumber: number, text: string) {
     super(id, owner, createdAt)
 
     this.repliedMessageAddedByEventRecordNumber = repliedMessageAddedByEventRecordNumber
@@ -63,7 +63,7 @@ class CreatePhotoMessageEvent extends CreateMessageEvent {
   @IsString({ each: true })
   readonly urls: string[]
 
-  constructor(id: number, owner: Owner, createdAt: Date, urls: string[]) {
+  constructor(id: string, owner: Owner, createdAt: Date, urls: string[]) {
     super(id, owner, createdAt)
 
     this.urls = urls
@@ -79,7 +79,7 @@ class CreateVideoMessageEvent extends CreateMessageEvent {
   @IsString()
   readonly url: string
 
-  constructor(id: number, owner: Owner, createdAt: Date, url: string) {
+  constructor(id: string, owner: Owner, createdAt: Date, url: string) {
     super(id, owner, createdAt)
 
     this.url = url
@@ -95,7 +95,7 @@ class CreateFileMessageEvent extends CreateMessageEvent {
   @IsString()
   readonly url: string
 
-  constructor(id: number, owner: Owner, createdAt: Date, url: string) {
+  constructor(id: string, owner: Owner, createdAt: Date, url: string) {
     super(id, owner, createdAt)
 
     this.url = url
@@ -111,7 +111,7 @@ class UpdateTextMessageEvent extends UpdateMessageEvent {
   @IsString()
   readonly text: string
 
-  constructor(id: number, owner: Owner, createdAt: Date, updatedMessageAddedByEventRecordNumber: number, text: string) {
+  constructor(id: string, owner: Owner, createdAt: Date, updatedMessageAddedByEventRecordNumber: number, text: string) {
     super(id, owner, createdAt, updatedMessageAddedByEventRecordNumber)
 
     this.text = text
@@ -127,7 +127,7 @@ class DeleteMessageEvent extends MessageEvent {
   @IsNumber()
   readonly deletedMessageAddedByEventRecordNumber: number
 
-  constructor(id: number, owner: Owner, createdAt: Date, deletedMessageAddedByEventRecordNumber: number) {
+  constructor(id: string, owner: Owner, createdAt: Date, deletedMessageAddedByEventRecordNumber: number) {
     super(id, owner, createdAt)
 
     this.deletedMessageAddedByEventRecordNumber = deletedMessageAddedByEventRecordNumber

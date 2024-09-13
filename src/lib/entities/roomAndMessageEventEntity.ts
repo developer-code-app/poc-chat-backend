@@ -23,8 +23,8 @@ class RoomAndMessageEventEntity {
   recordedAt!: Date
 
   @Column()
-  @IsNumber()
-  eventId!: number
+  @IsString()
+  eventId!: string
 
   @Column()
   @IsEnum(EventType)
