@@ -5,7 +5,7 @@ import { ReadMessageEvent } from "./models/events/readEvent"
 import { CreateRoomEvent, InviteMemberEvent, RemoveMemberEvent, UpdateMemberRoleEvent } from "./models/events/roomEvent"
 import { ChatRoomMemberRepository } from "./repositories/chatRoomMemberRepository"
 import { ChatRoomRepository } from "./repositories/chatRoomRepository"
-import { EventRepository } from "./repositories/EventRepository"
+import { EventRepository } from "./repositories/eventRepository"
 import { RueJaiUserRepository } from "./repositories/rueJaiUserRepository"
 
 class ChatService {
