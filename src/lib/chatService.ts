@@ -1,6 +1,13 @@
 import { AppDataSource } from "./dataSource"
 import { ChatRoom } from "./models/chatRoom"
-import { CreateTextMessageEvent, DeleteMessageEvent } from "./models/events/messageEvent"
+import {
+  CreateFileMessageEvent,
+  CreatePhotoMessageEvent,
+  CreateTextMessageEvent,
+  CreateVideoMessageEvent,
+  DeleteMessageEvent,
+  UpdateTextMessageEvent,
+} from "./models/events/messageEvent"
 import { ReadMessageEvent } from "./models/events/readEvent"
 import { CreateRoomEvent, InviteMemberEvent, RemoveMemberEvent, UpdateMemberRoleEvent } from "./models/events/roomEvent"
 import { ChatRoomMemberRepository } from "./repositories/chatRoomMemberRepository"
@@ -118,7 +125,7 @@ class ChatService {
     await queryRunner.commitTransaction()
   }
 
-  async createPhotoMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+  async createPhotoMessage(chatRoomId: number, event: CreatePhotoMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -131,7 +138,7 @@ class ChatService {
     await queryRunner.commitTransaction()
   }
 
-  async createVideoMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+  async createVideoMessage(chatRoomId: number, event: CreateVideoMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -144,7 +151,7 @@ class ChatService {
     await queryRunner.commitTransaction()
   }
 
-  async createFileMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+  async createFileMessage(chatRoomId: number, event: CreateFileMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -157,7 +164,7 @@ class ChatService {
     await queryRunner.commitTransaction()
   }
 
-  async editTextMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+  async editTextMessage(chatRoomId: number, event: UpdateTextMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
