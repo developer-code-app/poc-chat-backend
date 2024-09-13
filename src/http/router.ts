@@ -11,6 +11,8 @@ function createRouter() {
 
   router.get("/chat-rooms/:chatRoomId/getChatRoomEventArchiveUrls", )
 
+  router.post("/chat-rooms", controller.createChatRoom)
+
   return router
 }
 

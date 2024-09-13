@@ -1,9 +1,10 @@
 import { Request, Response } from "express"
-
-// import { ChatService } from "@lib/service"
+import { ChatService } from "../lib/service"
+import { eventFromObject } from "../lib/parsers/eventParser"
+import { CreateRoomEvent } from "../lib/models/events/roomEvent"
 
 class Controller {
-  // private service = new ChatService()
+  private service = new ChatService()
 
   getChatRooms = (_: Request, res: Response) => {
     res.json({
@@ -23,16 +24,16 @@ class Controller {
     })
   }
 
-  createChatRoom = (req: Request, res: Response) => {
-    // const event = eventFromObject(req.body) as CreateRoomEvent
+  createChatRoom = async (req: Request, res: Response) => {
+    const event = eventFromObject(req.body) as CreateRoomEvent
 
-    // const chatRoom = this.service.createChatRoom(event)
+    const chatRoom = await this.service.createChatRoom(event)
 
-    // res.json({
-    //   result: {
-    //     id: chatRoom.id,
-    //   },
-    // })
+    res.json({
+      result: {
+        id: chatRoom.id,
+      },
+    })
   }
 }
 
