@@ -9,11 +9,17 @@ class HttpServer {
     this._server = express()
     this._router = createRouter()
 
+    this.setupMiddlewares()
     this.setupRoutes()
+
     this.server.listen(parseInt(port), "0.0.0.0", () => {
       // eslint-disable-next-line no-console
       console.log(`Http Server is running on http://0.0.0.0:${port}`)
     })
+  }
+
+  private setupMiddlewares() {
+    this.server.use(express.json())
   }
 
   private setupRoutes() {
