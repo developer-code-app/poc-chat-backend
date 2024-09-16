@@ -15,7 +15,7 @@ enum EventType {
 
 const eventTypeFromString = (str: string): EventType => {
   if (!str) {
-    throw new Error("Invalid event type: ${str}")
+    throw new Error(`Invalid event type: ${str}`)
   }
 
   switch (str.toUpperCase()) {

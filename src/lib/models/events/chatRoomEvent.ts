@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer"
-import { IsDate, IsInstance, IsNumber, IsString } from "class-validator"
+import { IsDate, IsInstance, IsString } from "class-validator"
 
 import { Owner } from "./owner"
 import { EventType } from "./eventType"
