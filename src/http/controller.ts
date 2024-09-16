@@ -26,7 +26,6 @@ class Controller {
   }
 
   createChatRoom = async (req: Request, res: Response) => {
-    console.log(req.body)
     const event = eventFromObject(req.body) as CreateRoomEvent
 
     const chatRoom = await this.chatService.createChatRoom(event)

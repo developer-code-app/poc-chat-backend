@@ -22,8 +22,6 @@ class ChatService {
   private chatRoomMemberRepository = new ChatRoomMemberRepository()
 
   async createChatRoom(event: CreateRoomEvent): Promise<ChatRoom> {
-
-    console.log(event)
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 

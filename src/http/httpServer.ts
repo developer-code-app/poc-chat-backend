@@ -1,5 +1,7 @@
 import express, { Router, Express } from "express"
+
 import { createRouter } from "./router"
+import { errorHandler } from "./middlewares/errorHandler"
 
 class HttpServer {
   private _server?: Express
@@ -11,6 +13,7 @@ class HttpServer {
 
     this.setupMiddlewares()
     this.setupRoutes()
+    this.setupErrorHandler()
 
     this.server.listen(parseInt(port), "0.0.0.0", () => {
       // eslint-disable-next-line no-console
@@ -28,6 +31,10 @@ class HttpServer {
     })
 
     this.server.use("/api/ruejai-chat", this.router)
+  }
+
+  private setupErrorHandler() {
+    this.server.use(errorHandler)
   }
 
   get server() {
