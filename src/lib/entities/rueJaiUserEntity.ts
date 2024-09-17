@@ -6,7 +6,9 @@ import { ChatRoomEntity } from "./chatRoomEntity"
 import { RueJaiUserRole } from "../models/rueJaiUserRole"
 import { ChatRoomMemberEntity } from "./chatRoomMemberEntity"
 
-@Entity()
+@Entity({
+  name: "rue_jai_users",
+})
 class RueJaiUserEntity {
   @PrimaryGeneratedColumn()
   @IsNumber()
@@ -41,7 +43,7 @@ class RueJaiUserEntity {
   @IsString()
   thumbnailUrl?: string
 
-  @OneToMany(() => ChatRoomMemberEntity, (chatRoomMember) => chatRoomMember.rueJaiUser)
+  @OneToMany(() => ChatRoomMemberEntity, (chatRoomMember) => chatRoomMember.rueJaiUser, { nullable: true })
   @JoinTable()
   chatRoomMembers!: ChatRoomMemberEntity[]
 

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
 import { AppDataSource } from "./dataSource"
 import { ChatRoom } from "./models/chatRoom"
 import {
@@ -27,6 +29,16 @@ class ChatService {
 
     const chatRoom = await this.chatRoomRepository.createChatRoom(event.name, event.thumbnailUrl)
     await this.eventRepository.saveRoomAndMessageEvent(chatRoom.id, event)
+
+    event.members.forEach(async (member) => {
+      await this.chatRoomMemberRepository.createChatRoomMember(
+        chatRoom.id,
+        member.rueJaiUserId,
+        member.rueJaiUserType,
+        member.role,
+        0
+      )
+    })
 
     await queryRunner.commitTransaction()
 

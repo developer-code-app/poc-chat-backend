@@ -4,7 +4,9 @@ import { RueJaiUserType } from "../models/rueJaiUserType"
 import { IsDate, IsEnum, IsNumber, IsObject, IsString } from "class-validator"
 import { ChatRoomEntity } from "./chatRoomEntity"
 
-@Entity()
+@Entity({
+  name: "room_and_message_events",
+})
 class RoomAndMessageEventEntity {
   @PrimaryGeneratedColumn()
   @IsString()

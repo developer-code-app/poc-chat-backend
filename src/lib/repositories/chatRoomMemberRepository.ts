@@ -51,12 +51,18 @@ class ChatRoomMemberRepository {
     const rueJaiUser = await AppDataSource.getRepository(RueJaiUserEntity).findOneOrFail({
       where: { rueJaiUserId, rueJaiUserType },
     })
-    const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity).save({
-      chatRoomId,
-      rueJaiUser,
+    const params = {
+      chatRoom: {
+        id: chatRoomId,
+      },
+      rueJaiUser: {
+        id: rueJaiUser.id,
+      },
       role,
       lastReadMessageRecordNumber,
-    })
+    }
+
+    const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity).save(params)
 
     return new ChatRoomMember(
       chatRoomMemberEntity.id,

@@ -4,7 +4,9 @@ import { RoomAndMessageEventEntity } from "./roomAndMessageEventEntity"
 import { RueJaiUserEntity } from "./rueJaiUserEntity"
 import { ChatRoomMemberEntity } from "./chatRoomMemberEntity"
 
-@Entity()
+@Entity({
+  name: "chat_rooms",
+})
 class ChatRoomEntity {
   @PrimaryGeneratedColumn()
   @IsNumber()
