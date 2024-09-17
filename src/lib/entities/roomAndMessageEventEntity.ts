@@ -26,11 +26,14 @@ class RoomAndMessageEventEntity {
   @IsString()
   eventId!: string
 
-  @Column()
+  @Column({
+    type: "enum",
+    enum: EventType,
+  })
   @IsEnum(EventType)
   type!: EventType
 
-  @Column({ type: "jsonb" })
+  @Column({ type: "json", nullable: true })
   @IsObject()
   content: unknown
 

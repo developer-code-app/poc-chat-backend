@@ -36,7 +36,7 @@ class RueJaiUserEntity {
   @IsString()
   name!: string
 
-  @Column()
+  @Column({ nullable: true })
   @IsOptional()
   @IsString()
   thumbnailUrl?: string
