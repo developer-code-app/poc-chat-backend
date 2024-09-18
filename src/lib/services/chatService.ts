@@ -11,7 +11,12 @@ import {
   UpdateTextMessageEvent,
 } from "../models/events/messageEvent"
 import { ReadMessageEvent } from "../models/events/readEvent"
-import { CreateRoomEvent, InviteMemberEvent, RemoveMemberEvent, UpdateMemberRoleEvent } from "../models/events/roomEvent"
+import {
+  CreateRoomEvent,
+  InviteMemberEvent,
+  RemoveMemberEvent,
+  UpdateMemberRoleEvent,
+} from "../models/events/roomEvent"
 import { ChatRoomMemberRepository } from "../repositories/chatRoomMemberRepository"
 import { ChatRoomRepository } from "../repositories/chatRoomRepository"
 import { EventRepository } from "../repositories/eventRepository"
@@ -22,6 +27,10 @@ class ChatService {
   private eventRepository = new EventRepository()
   private rueJaiUserRepository = new RueJaiUserRepository()
   private chatRoomMemberRepository = new ChatRoomMemberRepository()
+
+  async getChatRoomLatestEventRecordInfo(chatRoomId: number): Promise<number> {
+    return this.eventRepository.getLatestRoomAndMessageEventRecordNumber(chatRoomId)
+  }
 
   async createChatRoom(event: CreateRoomEvent): Promise<ChatRoom> {
     const queryRunner = AppDataSource.createQueryRunner()

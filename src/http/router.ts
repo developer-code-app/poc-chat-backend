@@ -20,7 +20,7 @@ function createRouter() {
 
   router.get("/chat-rooms", controller.getChatRooms)
 
-  router.post("/chat-rooms/:chatRoomId/latest-event-record-info", controller.getChatRoomLatestEventRecordInfo)
+  router.get("/chat-rooms/:chatRoomId/latest-event-record-info", controller.getChatRoomLatestEventRecordInfo)
 
   router.get("/chat-rooms/:chatRoomId/getChatRoomEventArchiveUrls")
 

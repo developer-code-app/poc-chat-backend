@@ -13,9 +13,15 @@ class Controller {
     })
   }
 
-  getChatRoomLatestEventRecordInfo = (_: Request, res: Response) => {
+  getChatRoomLatestEventRecordInfo = (req: Request, res: Response) => {
+    const chatRoomId = parseInt(req.params.chatRoomId)
+
+    const latestRoomAndMessageEventRecordNumber = this.chatService.getChatRoomLatestEventRecordInfo(chatRoomId)
+
     res.json({
-      message: "Get chat room latest event record info",
+      result: {
+        latestRoomAndMessageEventRecordNumber,
+      },
     })
   }
 
