@@ -15,6 +15,7 @@ class ChatRoomEntity {
   @OneToMany(() => RoomAndMessageEventEntity, (roomAndMessageEvent) => roomAndMessageEvent.chatRoom)
   roomAndMessageEvents!: RoomAndMessageEventEntity[]
 
+  @OneToMany(() => ChatRoomMemberEntity, (chatRoomMember) => chatRoomMember.chatRoom)
   @JoinTable({ name: "chat_room_members" })
   chatRoomMembers!: ChatRoomMemberEntity[]
 

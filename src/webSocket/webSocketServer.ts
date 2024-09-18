@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable no-console */
 import { Server, WebSocket } from "ws"
 
@@ -9,7 +10,7 @@ class WebSocketServer {
   readonly connections: WebSocketConnection[] = []
 
   private _server: Server | undefined
-  private authenticationMiddleware: AuthenticationMiddleware = new AuthenticationMiddleware()
+  private _authenticationMiddleware: AuthenticationMiddleware | undefined
 
   start(port: string) {
     this.initializeWebSocketServer(port)
@@ -28,11 +29,12 @@ class WebSocketServer {
   }
 
   private setupWebSocketServer() {
+    this._authenticationMiddleware = new AuthenticationMiddleware()
     this.server.on("connection", this.setupWebSocketConnection)
   }
 
-  private setupWebSocketConnection = (connection: WebSocket, request: IncomingMessage) => {
-    const client = this.authenticationMiddleware.authenticate(connection, request)
+  private setupWebSocketConnection = async (connection: WebSocket, request: IncomingMessage) => {
+    const client = await this.authenticationMiddleware.authenticate(connection, request)
 
     if (client) {
       this.connections.push(new WebSocketConnection(connection, client))
@@ -45,6 +47,14 @@ class WebSocketServer {
     }
 
     return this._server
+  }
+
+  private get authenticationMiddleware(): AuthenticationMiddleware {
+    if (!this._authenticationMiddleware) {
+      throw new Error("Authentication middleware is not initialized")
+    }
+
+    return this._authenticationMiddleware
   }
 }
 

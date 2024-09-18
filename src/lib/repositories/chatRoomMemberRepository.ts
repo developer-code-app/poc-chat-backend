@@ -4,6 +4,7 @@ import { ChatRoomMemberEntity } from "../entities/chatRoomMemberEntity"
 import { RueJaiUserEntity } from "../entities/rueJaiUserEntity"
 import { ChatRoomMember, ChatRoomMemberRole } from "../models/chatRoomMember"
 import { RueJaiUserType } from "../models/rueJaiUserType"
+import { RueJaiUser } from "../models/rueJaiUser"
 
 class ChatRoomMemberRepository {
   constructor() {
@@ -32,10 +33,18 @@ class ChatRoomMemberRepository {
     const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity).findOneOrFail({
       where: { chatRoom: { id: chatRoomId }, rueJaiUser: { rueJaiUserId, rueJaiUserType } },
     })
+    const rueJaiUser = new RueJaiUser(
+      chatRoomMemberEntity.rueJaiUser.id,
+      chatRoomMemberEntity.rueJaiUser.rueJaiUserId,
+      chatRoomMemberEntity.rueJaiUser.rueJaiUserType,
+      chatRoomMemberEntity.rueJaiUser.rueJaiUserRole,
+      chatRoomMemberEntity.rueJaiUser.name,
+      chatRoomMemberEntity.rueJaiUser.thumbnailUrl
+    )
 
     return new ChatRoomMember(
       chatRoomMemberEntity.id,
-      chatRoomMemberEntity.rueJaiUser,
+      rueJaiUser,
       chatRoomMemberEntity.role,
       chatRoomMemberEntity.lastReadMessageRecordNumber
     )
@@ -48,7 +57,7 @@ class ChatRoomMemberRepository {
     role: ChatRoomMemberRole,
     lastReadMessageRecordNumber?: number
   ): Promise<ChatRoomMember> {
-    const rueJaiUser = await AppDataSource.getRepository(RueJaiUserEntity).findOneOrFail({
+    const rueJaiUserEntity = await AppDataSource.getRepository(RueJaiUserEntity).findOneOrFail({
       where: { rueJaiUserId, rueJaiUserType },
     })
     const params = {
@@ -56,17 +65,25 @@ class ChatRoomMemberRepository {
         id: chatRoomId,
       },
       rueJaiUser: {
-        id: rueJaiUser.id,
+        id: rueJaiUserEntity.id,
       },
       role,
       lastReadMessageRecordNumber,
     }
 
     const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity).save(params)
+    const rueJaiUser = new RueJaiUser(
+      chatRoomMemberEntity.rueJaiUser.id,
+      chatRoomMemberEntity.rueJaiUser.rueJaiUserId,
+      chatRoomMemberEntity.rueJaiUser.rueJaiUserType,
+      chatRoomMemberEntity.rueJaiUser.rueJaiUserRole,
+      chatRoomMemberEntity.rueJaiUser.name,
+      chatRoomMemberEntity.rueJaiUser.thumbnailUrl
+    )
 
     return new ChatRoomMember(
       chatRoomMemberEntity.id,
-      chatRoomMemberEntity.rueJaiUser,
+      rueJaiUser,
       chatRoomMemberEntity.role,
       chatRoomMemberEntity.lastReadMessageRecordNumber
     )

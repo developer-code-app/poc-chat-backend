@@ -13,7 +13,7 @@ class RoomAndMessageEventEntity {
   id!: string
 
   @Index()
-  @ManyToOne(() => ChatRoomEntity, (chatRoom) => chatRoom.roomAndMessageEvents)
+  @ManyToOne(() => ChatRoomEntity, (chatRoom) => chatRoom.roomAndMessageEvents, { nullable: false })
   chatRoom!: ChatRoomEntity
 
   @Column()

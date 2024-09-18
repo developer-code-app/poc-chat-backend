@@ -17,6 +17,7 @@ import {
   RemoveMemberEvent,
   UpdateMemberRoleEvent,
 } from "../models/events/roomEvent"
+import { RueJaiUser } from "../models/rueJaiUser"
 import { ChatRoomMemberRepository } from "../repositories/chatRoomMemberRepository"
 import { ChatRoomRepository } from "../repositories/chatRoomRepository"
 import { EventRepository } from "../repositories/eventRepository"
@@ -28,7 +29,15 @@ class ChatService {
   private rueJaiUserRepository = new RueJaiUserRepository()
   private chatRoomMemberRepository = new ChatRoomMemberRepository()
 
+  async getChatRooms(rueJaiUser: RueJaiUser): Promise<ChatRoom[]> {
+    return this.chatRoomRepository.getChatRoomsByUser(rueJaiUser)
+  }
+
   async getChatRoomLatestEventRecordInfo(chatRoomId: number): Promise<number> {
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
     return this.eventRepository.getLatestRoomAndMessageEventRecordNumber(chatRoomId)
   }
 

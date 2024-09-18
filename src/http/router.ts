@@ -18,9 +18,12 @@ function createRouter() {
   const router = Router()
   const controller = new Controller()
 
-  router.get("/chat-rooms", controller.getChatRooms)
+  router.get("/chat-rooms", asyncHandler(controller.getChatRooms))
 
-  router.get("/chat-rooms/:chatRoomId/latest-event-record-info", controller.getChatRoomLatestEventRecordInfo)
+  router.get(
+    "/chat-rooms/:chatRoomId/latest-event-record-info",
+    asyncHandler(controller.getChatRoomLatestEventRecordInfo)
+  )
 
   router.get("/chat-rooms/:chatRoomId/getChatRoomEventArchiveUrls")
 

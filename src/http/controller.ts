@@ -3,20 +3,33 @@ import { Request, Response } from "express"
 import { eventFromObject } from "../lib/parsers/eventParser"
 import { CreateRoomEvent } from "../lib/models/events/roomEvent"
 import { ChatService } from "../lib/services/chatService"
+import { ChatRoom } from "../lib/models/chatRoom"
 
 class Controller {
   private chatService = new ChatService()
 
-  getChatRooms = (_: Request, res: Response) => {
+  getChatRooms = async (req: Request, res: Response) => {
+    const rueJaiUser = req.user
+
+    const chatRooms: ChatRoom[] = await this.chatService.getChatRooms(rueJaiUser)
+
     res.json({
-      message: "Get chat rooms",
+      results: chatRooms.map((chatRoom) => {
+        const { id, name, thumbnailUrl } = chatRoom
+
+        return {
+          id,
+          name,
+          thumbnailUrl,
+        }
+      }),
     })
   }
 
-  getChatRoomLatestEventRecordInfo = (req: Request, res: Response) => {
+  getChatRoomLatestEventRecordInfo = async (req: Request, res: Response) => {
     const chatRoomId = parseInt(req.params.chatRoomId)
 
-    const latestRoomAndMessageEventRecordNumber = this.chatService.getChatRoomLatestEventRecordInfo(chatRoomId)
+    const latestRoomAndMessageEventRecordNumber = await this.chatService.getChatRoomLatestEventRecordInfo(chatRoomId)
 
     res.json({
       result: {
@@ -25,7 +38,8 @@ class Controller {
     })
   }
 
-  getChatRoomEventArchiveUrls = (_: Request, res: Response) => {
+  getChatRoomEventArchiveUrls = async (_: Request, res: Response) => {
+    await Promise.resolve()
     res.json({
       message: "Get chat room event archive urls",
     })

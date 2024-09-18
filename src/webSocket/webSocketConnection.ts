@@ -50,7 +50,7 @@ class WebSocketConnection {
   private async handleJsonMessage(json: unknown) {
     const message = await messageFromObject(json)
 
-    this.controller.onMessage(message)
+    await this.controller.onMessage(message)
   }
 }
 

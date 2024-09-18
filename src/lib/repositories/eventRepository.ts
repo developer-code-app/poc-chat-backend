@@ -17,7 +17,9 @@ class EventRepository {
     await AppDataSource.transaction(async (entityManager) => {
       const recordNumber = (await this.getLatestRoomAndMessageEventRecordNumber(chatRoomId)) + 1
       const params = {
-        chatRoomId,
+        chatRoom: {
+          id: chatRoomId,
+        },
         recordNumber,
         eventId: event.id,
         type: event.type,
