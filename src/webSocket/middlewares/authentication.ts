@@ -2,30 +2,35 @@
 import WebSocket from "ws"
 import { IncomingMessage } from "http"
 import { WebSocketClient } from "../../lib/models/webSocketClient"
+import { AuthenticationService } from "../../lib/services/authenticationService"
 
 class AuthenticationMiddleware {
-  authenticate(_: WebSocket, request: IncomingMessage): WebSocketClient | undefined {
-    const webSocketClient: WebSocketClient | undefined = this._authenticate(request)
+  private authenticationServer = new AuthenticationService()
 
-    if (webSocketClient) {
+  async authenticate(_: WebSocket, request: IncomingMessage): Promise<WebSocketClient | undefined> {
+    try {
+      const webSocketClient: WebSocketClient = await this._authenticate(request)
+
       console.log(`${webSocketClient.toString()}: Authenticated`)
 
       return webSocketClient
-    } else {
-      console.log("Unauthorized")
+    } catch (error) {
+      console.log(`Unauthorized: ${error}`)
 
       request.socket.end("HTTP/1.1 401 Unauthorized\r\n")
     }
   }
 
-  private _authenticate(request: IncomingMessage): WebSocketClient | undefined {
-    const credential: string | undefined = request.headers.authorization
+  private async _authenticate(request: IncomingMessage): Promise<WebSocketClient> {
+    const token: string | undefined = request.headers.authorization
 
-    console.log(request.headers.authorization)
-
-    if (credential) {
-      return new WebSocketClient(credential)
+    if (!token) {
+      throw new Error("Unauthorized: Token not found")
     }
+
+    const rueJaiUser = await this.authenticationServer.authenticate(token)
+
+    return new WebSocketClient(rueJaiUser)
   }
 }
 

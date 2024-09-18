@@ -1,16 +1,18 @@
-class WebSocketClient {
-  credential: string
+import { RueJaiUser } from "./rueJaiUser"
 
-  constructor(credential: string) {
-    this.credential = credential
+class WebSocketClient {
+  rueJaiUser: RueJaiUser
+
+  constructor(rueJaiUser: RueJaiUser) {
+    this.rueJaiUser = rueJaiUser
   }
 
   toString(): string {
-    return `WebSocketClient [${this.credential}]`
+    return `WebSocketClient [${this.rueJaiUser.name}]`
   }
 
   isEquals(client: WebSocketClient): boolean {
-    return this.credential === client.credential
+    return this.rueJaiUser.isEquals(client.rueJaiUser)
   }
 }
 

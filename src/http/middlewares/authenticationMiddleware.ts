@@ -6,13 +6,15 @@ async function authenticationMiddleware(req: Request, res: Response, next: NextF
     const token = req.get("Authorization")
     const authenticationService = new AuthenticationService()
 
-    if (token && (await authenticationService.authenticate(token))) {
-      next() // Token is valid, proceed to the next middleware
-    } else {
-      res.status(401).send(`Unauthorized: ${token ? token : "Token not found"}`) // Token is invalid or missing
+    if (!token) {
+      return res.status(401).send("Unauthorized: Token not found") // Token is missing
     }
+
+    await authenticationService.authenticate(token)
+
+    next()
   } catch (error) {
-    next(error)
+    res.status(401).send(`Unauthorized: ${error}`) // Token is invalid or missing
   }
 }
 

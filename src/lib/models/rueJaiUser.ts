@@ -45,6 +45,10 @@ class RueJaiUser {
     this.name = name
     this.thumbnailUrl = thumbnailUrl
   }
+
+  isEquals(user: RueJaiUser): boolean {
+    return this.id === user.id
+  }
 }
 
 export { RueJaiUser, RueJaiUserType, RueJaiUserRole }
