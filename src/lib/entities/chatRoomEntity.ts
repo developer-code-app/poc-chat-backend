@@ -1,5 +1,5 @@
 import { IsNumber, IsOptional, IsString } from "class-validator"
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { RoomAndMessageEventEntity } from "./roomAndMessageEventEntity"
 import { RueJaiUserEntity } from "./rueJaiUserEntity"
 import { ChatRoomMemberEntity } from "./chatRoomMemberEntity"
@@ -15,8 +15,7 @@ class ChatRoomEntity {
   @OneToMany(() => RoomAndMessageEventEntity, (roomAndMessageEvent) => roomAndMessageEvent.chatRoom)
   roomAndMessageEvents!: RoomAndMessageEventEntity[]
 
-  @ManyToMany(() => RueJaiUserEntity, (rueJaiUser) => rueJaiUser.chatRooms)
-  @JoinTable()
+  @JoinTable({ name: "chat_room_members" })
   chatRoomMembers!: ChatRoomMemberEntity[]
 
   @Column()

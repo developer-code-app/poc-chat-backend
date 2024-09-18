@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinTable, PrimaryGeneratedColumn } from "typeorm"
 
 import { RueJaiUserType } from "../models/rueJaiUserType"
 import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator"
@@ -43,8 +43,7 @@ class RueJaiUserEntity {
   @IsString()
   thumbnailUrl?: string
 
-  @OneToMany(() => ChatRoomMemberEntity, (chatRoomMember) => chatRoomMember.rueJaiUser, { nullable: true })
-  @JoinTable()
+  @JoinTable({ name: "chat_room_members" })
   chatRoomMembers!: ChatRoomMemberEntity[]
 
   get chatRooms(): ChatRoomEntity[] {
