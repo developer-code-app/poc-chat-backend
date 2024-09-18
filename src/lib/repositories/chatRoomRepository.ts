@@ -23,7 +23,7 @@ class ChatRoomRepository {
       where: { id: chatRoomId },
     })
 
-    return new ChatRoom(chatRoomEntity.id)
+    return new ChatRoom(chatRoomEntity.id, chatRoomEntity.name, chatRoomEntity.thumbnailUrl)
   }
   async createChatRoom(name: string, thumbnailUrl?: string): Promise<ChatRoom> {
     const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).save({
@@ -31,7 +31,11 @@ class ChatRoomRepository {
       thumbnailUrl,
     })
 
-    return new ChatRoom(chatRoomEntity.id)
+    return new ChatRoom(
+      chatRoomEntity.id,
+      chatRoomEntity.name,
+      chatRoomEntity.thumbnailUrl ? chatRoomEntity.thumbnailUrl : undefined
+    )
   }
 
   async updateChatRoom(

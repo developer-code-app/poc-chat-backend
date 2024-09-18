@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer"
-import { IsNumber, IsString } from "class-validator"
+import { IsNumber, IsString, validateSync } from "class-validator"
 
 class DatabaseConfig {
   @Expose({ name: "DB_HOST" })
@@ -29,6 +29,12 @@ class DatabaseConfig {
     this.username = username
     this.password = password
     this.database = database
+
+    const errors = validateSync(this)
+
+    if (errors.length > 0) {
+      throw new Error(errors.join(", "))
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { IsEnum, IsInstance, IsNumber } from "class-validator"
+import { IsEnum, IsInstance, IsNumber, validateSync } from "class-validator"
 import { Expose } from "class-transformer"
 
 import { RueJaiUser } from "./rueJaiUser"
@@ -25,6 +25,12 @@ class ChatRoomMember {
     this.rueJaiUser = rueJaiUser
     this.role = role
     this.lastReadMessageRecordNumber = lastReadMessageRecordNumber
+
+    const errors = validateSync(this)
+
+    if (errors.length > 0) {
+      throw new Error(errors.join(", "))
+    }
   }
 }
 

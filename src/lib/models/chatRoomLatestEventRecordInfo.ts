@@ -1,5 +1,5 @@
 import { Expose } from "class-transformer"
-import { IsNumber } from "class-validator"
+import { IsNumber, validateSync } from "class-validator"
 
 class ChatRoomLatestEventRecordInfo {
   @Expose({ name: "message_record_number" })
@@ -13,6 +13,12 @@ class ChatRoomLatestEventRecordInfo {
   constructor(messageRecordNumber: number, roomManagementRecordNumber: number) {
     this.messageRecordNumber = messageRecordNumber
     this.roomManagementRecordNumber = roomManagementRecordNumber
+
+    const errors = validateSync(this)
+
+    if (errors.length > 0) {
+      throw new Error(errors.join(", "))
+    }
   }
 }
 

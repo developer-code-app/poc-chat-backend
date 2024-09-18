@@ -1,5 +1,5 @@
 import { Expose } from "class-transformer"
-import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator"
+import { IsEnum, IsNumber, IsOptional, IsString, validateSync } from "class-validator"
 
 import { RueJaiUserType } from "./rueJaiUserType"
 import { RueJaiUserRole } from "./rueJaiUserRole"
@@ -44,6 +44,12 @@ class RueJaiUser {
     this.rueJaiUserRole = rueJaiUserRole
     this.name = name
     this.thumbnailUrl = thumbnailUrl
+
+    const errors = validateSync(this)
+
+    if (errors.length > 0) {
+      throw new Error(errors.join(", "))
+    }
   }
 }
 

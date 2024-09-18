@@ -33,6 +33,8 @@ class Controller {
     res.json({
       result: {
         id: chatRoom.id,
+        name: chatRoom.name,
+        thumbnailUrl: chatRoom.thumbnailUrl,
       },
     })
   }

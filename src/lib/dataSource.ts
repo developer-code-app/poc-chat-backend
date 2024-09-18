@@ -1,4 +1,5 @@
 import "reflect-metadata"
+import dotenv from "dotenv"
 import { DataSource } from "typeorm"
 import { plainToClass } from "class-transformer"
 
@@ -6,9 +7,8 @@ import { DatabaseConfig } from "./models/databaseConfig"
 import { RoomAndMessageEventEntity } from "./entities/roomAndMessageEventEntity"
 import { RueJaiUserEntity } from "./entities/rueJaiUserEntity"
 import { ChatRoomEntity } from "./entities/chatRoomEntity"
-import dotenv from "dotenv"
-import { validateSync } from "class-validator"
 import { ChatRoomMemberEntity } from "./entities/chatRoomMemberEntity"
+import { validateSync } from "class-validator"
 
 function loadDatabaseConfig(): DatabaseConfig {
   dotenv.config()
