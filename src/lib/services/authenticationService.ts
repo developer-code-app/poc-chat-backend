@@ -5,7 +5,12 @@ class AuthenticationService {
   private rueJaiUserRepository = new RueJaiUserRepository()
 
   async authenticate(token: string): Promise<boolean> {
-    const credentials = token.split(" ")[1].split("_")
+    const credentials = token.split(" ")[1].split(":")
+
+    if (!credentials[0] || !credentials[1]) {
+      return false
+    }
+
     const rueJaiUserId = credentials[0]
     const rueJaiUserType = fromString(credentials[1])
 
