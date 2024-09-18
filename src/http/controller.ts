@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 
 import { eventFromObject } from "../lib/parsers/eventParser"
 import { CreateRoomEvent } from "../lib/models/events/roomEvent"
-import { ChatService } from "../lib/chatService"
+import { ChatService } from "../lib/services/chatService"
 
 class Controller {
   private chatService = new ChatService()

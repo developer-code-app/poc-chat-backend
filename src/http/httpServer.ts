@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
 import express, { Router, Express } from "express"
 
 import { createRouter } from "./router"
-import { errorHandler } from "./middlewares/errorHandler"
+import { authenticationMiddleware } from "./middlewares/authenticationMiddleWare"
+import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware"
 
 class HttpServer {
   private _server?: Express
@@ -23,6 +26,7 @@ class HttpServer {
 
   private setupMiddlewares() {
     this.server.use(express.json())
+    this.server.use(authenticationMiddleware)
   }
 
   private setupRoutes() {
@@ -34,10 +38,10 @@ class HttpServer {
   }
 
   private setupErrorHandler() {
-    this.server.use(errorHandler)
+    this.server.use(errorHandlingMiddleware)
   }
 
-  get server() {
+  private get server() {
     if (!this._server) {
       throw new Error("Http Server is not initialized")
     }
@@ -45,7 +49,7 @@ class HttpServer {
     return this._server
   }
 
-  get router() {
+  private get router() {
     if (!this._router) {
       throw new Error("Router is not initialized")
     }

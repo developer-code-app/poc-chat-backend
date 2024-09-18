@@ -1,5 +1,5 @@
 import { Expose } from "class-transformer"
-import { IsNumber, IsOptional, IsString, validateSync } from "class-validator"
+import { IsNumber, IsOptional, IsString } from "class-validator"
 
 class ChatRoom {
   @Expose({ name: "id" })
@@ -19,12 +19,6 @@ class ChatRoom {
     this.id = id
     this.name = name
     this.thumbnailUrl = thumbnailUrl
-
-    const errors = validateSync(this)
-
-    if (errors.length > 0) {
-      throw new Error(errors.join(", "))
-    }
   }
 }
 

@@ -5,7 +5,7 @@ import { WebSocketClient } from "../lib/models/webSocketClient"
 import { Message } from "./messages/message"
 import { ChatRoomEvent } from "../lib/models/events/chatRoomEvent"
 import { EventType } from "../lib/models/events/eventType"
-import { ChatService } from "../lib/chatService"
+import { ChatService } from "../lib/services/chatService"
 import { InviteMemberEvent, RemoveMemberEvent } from "../lib/models/events/roomEvent"
 import {
   CreateFileMessageEvent,
