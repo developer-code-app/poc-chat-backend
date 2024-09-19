@@ -3,7 +3,7 @@
 import express, { Router, Express } from "express"
 
 import { createRouter } from "./router"
-import { authenticationMiddleware } from "./middlewares/authenticationMiddleWare"
+import { authenticationMiddleware } from "./middlewares/authenticationMiddleware"
 import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware"
 
 class HttpServer {
