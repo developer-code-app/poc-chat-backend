@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer"
-import { IsDate, IsInstance, IsString } from "class-validator"
+import { IsDate, IsEnum, IsInstance, IsString } from "class-validator"
 
 import { Owner } from "./owner"
 import { EventType } from "./eventType"
@@ -19,14 +19,15 @@ abstract class ChatRoomEvent {
   @IsDate()
   readonly createdAt: Date
 
-  constructor(id: string, owner: Owner, createdAt: Date) {
+  @Expose({ name: "type" })
+  @IsEnum(() => EventType)
+  readonly type: EventType
+
+  constructor(id: string, owner: Owner, createdAt: Date, type: EventType) {
     this.id = id
     this.owner = owner
     this.createdAt = createdAt
-  }
-
-  get type(): EventType {
-    throw new Error("Not implemented")
+    this.type = type
   }
 }
 

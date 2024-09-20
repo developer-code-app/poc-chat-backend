@@ -3,7 +3,9 @@ import { WebSocket } from "ws"
 
 import { Controller } from "./controller"
 import { WebSocketClient } from "../lib/models/webSocketClient"
-import { messageFromObject } from "./messages/message"
+import { plainToInstance } from "class-transformer"
+import { validateOrReject } from "class-validator"
+import { UnrecordedEventMessage } from "./messages/unrecordedEventMessage"
 
 class WebSocketConnection {
   readonly client: WebSocketClient
@@ -48,7 +50,9 @@ class WebSocketConnection {
   }
 
   private async handleJsonMessage(json: unknown) {
-    const message = await messageFromObject(json)
+    const message = plainToInstance(UnrecordedEventMessage, json)
+
+    await validateOrReject(message)
 
     await this.controller.onMessage(message)
   }

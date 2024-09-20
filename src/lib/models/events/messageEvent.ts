@@ -14,8 +14,14 @@ abstract class UpdateMessageEvent extends MessageEvent {
   @IsNumber()
   readonly updatedMessageAddedByEventRecordNumber: number
 
-  constructor(id: string, owner: Owner, createdAt: Date, updatedMessageAddedByEventRecordNumber: number) {
-    super(id, owner, createdAt)
+  constructor(
+    id: string,
+    owner: Owner,
+    createdAt: Date,
+    type: EventType,
+    updatedMessageAddedByEventRecordNumber: number
+  ) {
+    super(id, owner, createdAt, type)
 
     this.updatedMessageAddedByEventRecordNumber = updatedMessageAddedByEventRecordNumber
   }
@@ -27,13 +33,9 @@ class CreateTextMessageEvent extends CreateMessageEvent {
   readonly text: string
 
   constructor(id: string, owner: Owner, createdAt: Date, text: string) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.CREATE_TEXT_MESSAGE)
 
     this.text = text
-  }
-
-  get type() {
-    return EventType.CREATE_TEXT_MESSAGE
   }
 }
 
@@ -47,14 +49,10 @@ class CreateTextReplyMessageEvent extends CreateMessageEvent {
   readonly text: string
 
   constructor(id: string, owner: Owner, createdAt: Date, repliedMessageAddedByEventRecordNumber: number, text: string) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.CREATE_TEXT_REPLY_MESSAGE)
 
     this.repliedMessageAddedByEventRecordNumber = repliedMessageAddedByEventRecordNumber
     this.text = text
-  }
-
-  get type() {
-    return EventType.CREATE_TEXT_REPLY_MESSAGE
   }
 }
 
@@ -64,13 +62,9 @@ class CreatePhotoMessageEvent extends CreateMessageEvent {
   readonly urls: string[]
 
   constructor(id: string, owner: Owner, createdAt: Date, urls: string[]) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.CREATE_PHOTO_MESSAGE)
 
     this.urls = urls
-  }
-
-  get type() {
-    return EventType.CREATE_PHOTO_MESSAGE
   }
 }
 
@@ -80,13 +74,9 @@ class CreateVideoMessageEvent extends CreateMessageEvent {
   readonly url: string
 
   constructor(id: string, owner: Owner, createdAt: Date, url: string) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.CREATE_VIDEO_MESSAGE)
 
     this.url = url
-  }
-
-  get type() {
-    return EventType.CREATE_VIDEO_MESSAGE
   }
 }
 
@@ -96,13 +86,9 @@ class CreateFileMessageEvent extends CreateMessageEvent {
   readonly url: string
 
   constructor(id: string, owner: Owner, createdAt: Date, url: string) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.CREATE_FILE_MESSAGE)
 
     this.url = url
-  }
-
-  get type() {
-    return EventType.CREATE_FILE_MESSAGE
   }
 }
 
@@ -112,13 +98,9 @@ class UpdateTextMessageEvent extends UpdateMessageEvent {
   readonly text: string
 
   constructor(id: string, owner: Owner, createdAt: Date, updatedMessageAddedByEventRecordNumber: number, text: string) {
-    super(id, owner, createdAt, updatedMessageAddedByEventRecordNumber)
+    super(id, owner, createdAt, EventType.EDIT_TEXT_MESSAGE, updatedMessageAddedByEventRecordNumber)
 
     this.text = text
-  }
-
-  get type() {
-    return EventType.EDIT_TEXT_MESSAGE
   }
 }
 
@@ -128,13 +110,9 @@ class DeleteMessageEvent extends MessageEvent {
   readonly deletedMessageAddedByEventRecordNumber: number
 
   constructor(id: string, owner: Owner, createdAt: Date, deletedMessageAddedByEventRecordNumber: number) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.DELETE_MESSAGE)
 
     this.deletedMessageAddedByEventRecordNumber = deletedMessageAddedByEventRecordNumber
-  }
-
-  get type() {
-    return EventType.DELETE_MESSAGE
   }
 }
 

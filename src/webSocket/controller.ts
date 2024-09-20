@@ -2,7 +2,7 @@
 import { WebSocket } from "ws"
 
 import { WebSocketClient } from "../lib/models/webSocketClient"
-import { Message } from "./messages/message"
+import { Message } from "./messages/eventMessage"
 import { ChatRoomEvent } from "../lib/models/events/chatRoomEvent"
 import { EventType } from "../lib/models/events/eventType"
 import { ChatService } from "../lib/services/chatService"

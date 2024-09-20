@@ -4,6 +4,7 @@ import { RueJaiUserEntity } from "../entities/rueJaiUserEntity"
 import { RueJaiUser } from "../models/rueJaiUser"
 import { RueJaiUserRole } from "../models/rueJaiUserRole"
 import { RueJaiUserType } from "../models/rueJaiUserType"
+import { ChatRoomEntity } from "../entities/chatRoomEntity"
 
 class RueJaiUserRepository {
   constructor() {
@@ -32,6 +33,26 @@ class RueJaiUserRepository {
       rueJaiUserEntity.rueJaiUserRole,
       rueJaiUserEntity.name,
       rueJaiUserEntity.thumbnailUrl
+    )
+  }
+
+  async getRueJaiUsersByChatRoom(chatRoomId: number): Promise<RueJaiUser[]> {
+    const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOneOrFail({
+      where: { id: chatRoomId },
+    })
+    const chatRoomMemberEntities = chatRoomEntity.chatRoomMembers
+    const rueJaiUserEntities = chatRoomMemberEntities.map((chatRoomMemberEntity) => chatRoomMemberEntity.rueJaiUser)
+
+    return rueJaiUserEntities.map(
+      (rueJaiUserEntity) =>
+        new RueJaiUser(
+          rueJaiUserEntity.id,
+          rueJaiUserEntity.rueJaiUserId,
+          rueJaiUserEntity.rueJaiUserType,
+          rueJaiUserEntity.rueJaiUserRole,
+          rueJaiUserEntity.name,
+          rueJaiUserEntity.thumbnailUrl
+        )
     )
   }
 

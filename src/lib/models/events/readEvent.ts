@@ -11,13 +11,9 @@ class ReadMessageEvent extends ChatRoomEvent {
   readonly lastReadMessageAddedByEventRecordNumber: number
 
   constructor(id: string, owner: Owner, createdAt: Date, lastReadMessageAddedByEventRecordNumber: number) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.READ_MESSAGE)
 
     this.lastReadMessageAddedByEventRecordNumber = lastReadMessageAddedByEventRecordNumber
-  }
-
-  get type() {
-    return EventType.READ_MESSAGE
   }
 }
 

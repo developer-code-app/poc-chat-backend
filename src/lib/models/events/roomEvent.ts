@@ -52,15 +52,11 @@ class CreateRoomEvent extends RoomEvent {
     members: EventChatRoomMember[],
     thumbnailUrl?: string
   ) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.CREATE_ROOM)
 
     this.name = name
     this.members = members
     this.thumbnailUrl = thumbnailUrl
-  }
-
-  get type() {
-    return EventType.CREATE_ROOM
   }
 }
 
@@ -71,13 +67,9 @@ class InviteMemberEvent extends RoomEvent {
   readonly invitedMember: EventChatRoomMember
 
   constructor(id: string, owner: Owner, createdAt: Date, invitedMember: EventChatRoomMember) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.INVITE_MEMBER)
 
     this.invitedMember = invitedMember
-  }
-
-  get type() {
-    return EventType.INVITE_MEMBER
   }
 }
 
@@ -97,14 +89,10 @@ class UpdateMemberRoleEvent extends RoomEvent {
     updatedMember: EventChatRoomMember,
     memberRole: ChatRoomMemberRole
   ) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.EDIT_MEMBER_ROLE)
 
     this.updatedMember = updatedMember
     this.memberRole = memberRole
-  }
-
-  get type() {
-    return EventType.EDIT_MEMBER_ROLE
   }
 }
 
@@ -114,13 +102,9 @@ class RemoveMemberEvent extends RoomEvent {
   readonly removedMember: EventChatRoomMember
 
   constructor(id: string, owner: Owner, createdAt: Date, removedMember: EventChatRoomMember) {
-    super(id, owner, createdAt)
+    super(id, owner, createdAt, EventType.REMOVE_MEMBER)
 
     this.removedMember = removedMember
-  }
-
-  get type(): EventType {
-    return EventType.REMOVE_MEMBER
   }
 }
 

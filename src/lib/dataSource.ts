@@ -1,7 +1,7 @@
 import "reflect-metadata"
 import dotenv from "dotenv"
 import { DataSource } from "typeorm"
-import { plainToClass } from "class-transformer"
+import { plainToInstance } from "class-transformer"
 
 import { DatabaseConfig } from "./models/databaseConfig"
 import { RoomAndMessageEventEntity } from "./entities/roomAndMessageEventEntity"
@@ -13,7 +13,7 @@ import { validateSync } from "class-validator"
 function loadDatabaseConfig(): DatabaseConfig {
   dotenv.config()
 
-  const config = plainToClass(DatabaseConfig, process.env)
+  const config = plainToInstance(DatabaseConfig, process.env)
   const errors = validateSync(config)
 
   if (errors.length > 0) {
