@@ -37,11 +37,16 @@ class RueJaiUserRepository {
   }
 
   async getRueJaiUsersByChatRoom(chatRoomId: number): Promise<RueJaiUser[]> {
-    const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOneOrFail({
+    const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOne({
       where: { id: chatRoomId },
+      relations: ["chatRoomMembers", "chatRoomMembers.rueJaiUser"],
     })
-    const chatRoomMemberEntities = chatRoomEntity.chatRoomMembers
-    const rueJaiUserEntities = chatRoomMemberEntities.map((chatRoomMemberEntity) => chatRoomMemberEntity.rueJaiUser)
+
+    if (!chatRoomEntity) {
+      throw new Error(`ChatRoom with id ${chatRoomId} not found`)
+    }
+
+    const rueJaiUserEntities = chatRoomEntity.chatRoomMembers.map((member) => member.rueJaiUser)
 
     return rueJaiUserEntities.map(
       (rueJaiUserEntity) =>

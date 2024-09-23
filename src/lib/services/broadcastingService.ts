@@ -9,6 +9,7 @@ class BroadcastingService {
 
   async broadcastChatRoomEvent(chatRoomId: number, event: RecordedEvent) {
     const rueJaiUsers = await this.rueJaiUserRepository.getRueJaiUsersByChatRoom(chatRoomId)
+
     const message = new RecordedEventMessage(chatRoomId, event)
 
     this.broadcastingRepository.broadcastRecordedEventMessage(rueJaiUsers, message)
