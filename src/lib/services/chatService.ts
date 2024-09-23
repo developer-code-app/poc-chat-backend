@@ -44,6 +44,22 @@ class ChatService {
     return this.eventRepository.getLatestRoomAndMessageEventRecordNumber(chatRoomId)
   }
 
+  async getChatRoomMembers(chatRoomId: number) {
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    return this.chatRoomMemberRepository.getChatRoomMembers(chatRoomId)
+  }
+
+  async getChatRoomEvents(chatRoomId: number, startAt: number) {
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    return this.eventRepository.getRoomAndMessageEvents(chatRoomId, startAt)
+  }
+
   async createChatRoom(event: CreateRoomEvent): Promise<ChatRoom> {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()

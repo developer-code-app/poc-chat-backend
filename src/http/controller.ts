@@ -4,6 +4,7 @@ import { eventFromObject } from "../lib/parsers/eventParser"
 import { CreateRoomEvent } from "../lib/models/events/roomEvent"
 import { ChatService } from "../lib/services/chatService"
 import { ChatRoom } from "../lib/models/chatRoom"
+import { instanceToPlain } from "class-transformer"
 
 class Controller {
   private chatService = new ChatService()
@@ -38,10 +39,27 @@ class Controller {
     })
   }
 
-  getChatRoomEventArchiveUrls = async (_: Request, res: Response) => {
-    await Promise.resolve()
+  getChatRoomMembers = async (req: Request, res: Response) => {
+    const chatRoomId = parseInt(req.params.chatRoomId)
+
+    const members = await this.chatService.getChatRoomMembers(chatRoomId)
+    const memberObjects = members.map((member) => {
+      return instanceToPlain(member)
+    })
+
     res.json({
-      message: "Get chat room event archive urls",
+      results: memberObjects,
+    })
+  }
+
+  getChatRoomEvents = async (req: Request, res: Response) => {
+    const chatRoomId = parseInt(req.params.chatRoomId)
+    const startAt = 0
+
+    const events = await this.chatService.getChatRoomEvents(chatRoomId, startAt)
+
+    res.json({
+      results: events,
     })
   }
 

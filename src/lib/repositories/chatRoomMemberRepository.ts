@@ -5,6 +5,7 @@ import { RueJaiUserEntity } from "../entities/rueJaiUserEntity"
 import { ChatRoomMember, ChatRoomMemberRole } from "../models/chatRoomMember"
 import { RueJaiUserType } from "../models/rueJaiUserType"
 import { RueJaiUser } from "../models/rueJaiUser"
+import { ChatRoomEntity } from "../entities/chatRoomEntity"
 
 class ChatRoomMemberRepository {
   constructor() {
@@ -39,7 +40,7 @@ class ChatRoomMemberRepository {
       chatRoomMemberEntity.rueJaiUser.rueJaiUserType,
       chatRoomMemberEntity.rueJaiUser.rueJaiUserRole,
       chatRoomMemberEntity.rueJaiUser.name,
-      chatRoomMemberEntity.rueJaiUser.thumbnailUrl
+      chatRoomMemberEntity.rueJaiUser.thumbnailUrl ? chatRoomMemberEntity.rueJaiUser.thumbnailUrl : undefined
     )
 
     return new ChatRoomMember(
@@ -47,6 +48,36 @@ class ChatRoomMemberRepository {
       rueJaiUser,
       chatRoomMemberEntity.role,
       chatRoomMemberEntity.lastReadMessageRecordNumber
+    )
+  }
+
+  async getChatRoomMembers(chatRoomId: number): Promise<ChatRoomMember[]> {
+    const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOne({
+      where: { id: chatRoomId },
+      relations: ["chatRoomMembers", "chatRoomMembers.rueJaiUser"],
+    })
+
+    if (!chatRoomEntity) {
+      throw new Error(`ChatRoom with id ${chatRoomId} not found`)
+    }
+
+    const chatRoomMemberEntities = chatRoomEntity.chatRoomMembers
+
+    return chatRoomMemberEntities.map(
+      (member) =>
+        new ChatRoomMember(
+          member.id,
+          new RueJaiUser(
+            member.rueJaiUser.id,
+            member.rueJaiUser.rueJaiUserId,
+            member.rueJaiUser.rueJaiUserType,
+            member.rueJaiUser.rueJaiUserRole,
+            member.rueJaiUser.name,
+            member.rueJaiUser.thumbnailUrl
+          ),
+          member.role, // Role in the chat room
+          member.lastReadMessageRecordNumber // Last read message record number (optional)
+        )
     )
   }
 

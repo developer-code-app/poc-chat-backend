@@ -14,6 +14,17 @@ class EventRepository {
     }
   }
 
+  async getRoomAndMessageEvents(chatRoomId: number, startAt: number): Promise<RecordedEvent[]> {
+    const roomAndMessageEventEntities = await AppDataSource.getRepository(RoomAndMessageEventEntity)
+      .createQueryBuilder("event")
+      .where("event.chatRoomId = :chatRoomId", { chatRoomId })
+      .andWhere("event.recordNumber > :startAt", { startAt })
+      .orderBy("event.recordNumber", "ASC")
+      .getMany()
+
+    return roomAndMessageEventEntities.map((entity) => eventFromEntity(entity))
+  }
+
   async saveRoomAndMessageEvent(chatRoomId: number, event: ChatRoomEvent): Promise<RecordedEvent> {
     const roomAndMessageEventEntity = await AppDataSource.transaction(async (entityManager) => {
       const recordNumber = (await this.getLatestRoomAndMessageEventRecordNumber(chatRoomId)) + 1

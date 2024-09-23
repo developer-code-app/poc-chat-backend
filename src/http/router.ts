@@ -25,7 +25,9 @@ function createRouter() {
     asyncHandler(controller.getChatRoomLatestEventRecordInfo)
   )
 
-  router.get("/chat-rooms/:chatRoomId/getChatRoomEventArchiveUrls")
+  router.get("/chat-rooms/:chatRoomId/members", asyncHandler(controller.getChatRoomMembers))
+
+  router.get("/chat-rooms/:chatRoomId/events", asyncHandler(controller.getChatRoomEvents))
 
   router.post("/chat-rooms", asyncHandler(controller.createChatRoom))
 
