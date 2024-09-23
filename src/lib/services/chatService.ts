@@ -22,8 +22,11 @@ import { ChatRoomMemberRepository } from "../repositories/chatRoomMemberReposito
 import { ChatRoomRepository } from "../repositories/chatRoomRepository"
 import { EventRepository } from "../repositories/eventRepository"
 import { RueJaiUserRepository } from "../repositories/rueJaiUserRepository"
+import { BroadcastingService } from "./broadcastingService"
 
 class ChatService {
+  private broadcastingService = new BroadcastingService()
+
   private chatRoomRepository = new ChatRoomRepository()
   private eventRepository = new EventRepository()
   private rueJaiUserRepository = new RueJaiUserRepository()
@@ -88,9 +91,11 @@ class ChatService {
       0
     )
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async updateMemberRole(chatRoomId: number, event: UpdateMemberRoleEvent) {
@@ -107,9 +112,11 @@ class ChatService {
       throw new Error("Chatroom member not found")
     }
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async removeMember(chatRoomId: number, event: RemoveMemberEvent) {
@@ -124,9 +131,11 @@ class ChatService {
 
     await this.chatRoomMemberRepository.deleteChatRoomMember(chatRoomId, rueJaiUserId, rueJaiUserType)
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async createTextMessage(chatRoomId: number, event: CreateTextMessageEvent) {
@@ -137,9 +146,11 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async createTextReplyMessage(chatRoomId: number, event: CreateTextMessageEvent) {
@@ -150,9 +161,11 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async createPhotoMessage(chatRoomId: number, event: CreatePhotoMessageEvent) {
@@ -163,9 +176,11 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async createVideoMessage(chatRoomId: number, event: CreateVideoMessageEvent) {
@@ -176,9 +191,11 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async createFileMessage(chatRoomId: number, event: CreateFileMessageEvent) {
@@ -189,9 +206,11 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async editTextMessage(chatRoomId: number, event: UpdateTextMessageEvent) {
@@ -202,9 +221,11 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async deleteMessage(chatRoomId: number, event: DeleteMessageEvent) {
@@ -215,9 +236,11 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
   async readMessage(chatRoomId: number, event: ReadMessageEvent) {

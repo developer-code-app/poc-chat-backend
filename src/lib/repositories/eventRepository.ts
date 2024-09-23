@@ -4,7 +4,8 @@
 import { ChatRoomEvent } from "../models/events/chatRoomEvent"
 import { AppDataSource } from "../dataSource"
 import { RoomAndMessageEventEntity } from "../entities/roomAndMessageEventEntity"
-import { eventEntityContentFromEvent } from "../parsers/eventParser"
+import { eventEntityContentFromEvent, eventFromEntity } from "../parsers/eventParser"
+import { RecordedEvent } from "../models/events/recordedEvent"
 
 class EventRepository {
   constructor() {
@@ -13,8 +14,8 @@ class EventRepository {
     }
   }
 
-  async saveRoomAndMessageEvent(chatRoomId: number, event: ChatRoomEvent): Promise<void> {
-    await AppDataSource.transaction(async (entityManager) => {
+  async saveRoomAndMessageEvent(chatRoomId: number, event: ChatRoomEvent): Promise<RecordedEvent> {
+    const roomAndMessageEventEntity = await AppDataSource.transaction(async (entityManager) => {
       const recordNumber = (await this.getLatestRoomAndMessageEventRecordNumber(chatRoomId)) + 1
       const params = {
         chatRoom: {
@@ -28,8 +29,10 @@ class EventRepository {
         ownerRueJaiUserType: event.owner.rueJaiUserType,
       }
 
-      await entityManager.save(RoomAndMessageEventEntity, params)
+      return await entityManager.save(RoomAndMessageEventEntity, params)
     })
+
+    return eventFromEntity(roomAndMessageEventEntity)
   }
 
   async getLatestRoomAndMessageEventRecordNumber(chatRoomId: number): Promise<number> {

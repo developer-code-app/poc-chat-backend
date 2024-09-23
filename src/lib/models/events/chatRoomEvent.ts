@@ -20,7 +20,7 @@ abstract class ChatRoomEvent {
   readonly createdAt: Date
 
   @Expose({ name: "type" })
-  @IsEnum(() => EventType)
+  @IsEnum(EventType)
   readonly type: EventType
 
   constructor(id: string, owner: Owner, createdAt: Date, type: EventType) {

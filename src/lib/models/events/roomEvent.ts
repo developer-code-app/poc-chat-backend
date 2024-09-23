@@ -25,6 +25,10 @@ class EventChatRoomMember {
     this.rueJaiUserId = rueJaiUserId
     this.rueJaiUserType = rueJaiUserType
   }
+
+  toString(): string {
+    return `ID: ${this.rueJaiUserId} Type: ${this.rueJaiUserType} Role: ${this.role},`
+  }
 }
 
 abstract class RoomEvent extends ChatRoomEvent {}

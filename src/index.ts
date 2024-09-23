@@ -23,11 +23,11 @@ async function connectToDatabase(): Promise<DataSource> {
 }
 
 function startServers() {
-  const HTTP_PORT: string = process.env.HTTP_PORT ?? "3000"
   const WSS_PORT = process.env.WSS_PORT ?? "4000"
+  const HTTP_PORT: string = process.env.HTTP_PORT ?? "3000"
 
-  httpServer.start(HTTP_PORT)
   webSocketServer.start(WSS_PORT)
+  httpServer.start(HTTP_PORT)
 }
 
 void main()

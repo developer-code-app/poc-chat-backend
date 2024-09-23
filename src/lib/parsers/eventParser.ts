@@ -80,7 +80,7 @@ const eventFromObject = (obj: unknown): ChatRoomEvent => {
   const validationErrors = validateSync(event)
 
   if (validationErrors.length > 0) {
-    throw new Error(`Invalid event: ${validationErrors}`)
+    throw new Error(`Invalid event: ${validationErrors}\n`)
   }
 
   return event
