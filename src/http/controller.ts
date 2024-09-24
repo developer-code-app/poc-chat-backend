@@ -15,7 +15,7 @@ class Controller {
     const chatRooms: ChatRoom[] = await this.chatService.getChatRooms(rueJaiUser)
 
     res.json({
-      results: chatRooms.map((chatRoom) => {
+      result: chatRooms.map((chatRoom) => {
         const { id, name, thumbnailUrl } = chatRoom
 
         return {
@@ -34,7 +34,7 @@ class Controller {
 
     res.json({
       result: {
-        latestRoomAndMessageEventRecordNumber,
+        latest_room_and_message_event_record_number: latestRoomAndMessageEventRecordNumber,
       },
     })
   }
@@ -48,7 +48,7 @@ class Controller {
     })
 
     res.json({
-      results: memberObjects,
+      result: memberObjects,
     })
   }
 
@@ -59,7 +59,7 @@ class Controller {
     const events = await this.chatService.getChatRoomEvents(chatRoomId, startAt)
 
     res.json({
-      results: events,
+      result: events,
     })
   }
 
