@@ -57,9 +57,12 @@ class Controller {
     const startAt = 0
 
     const events = await this.chatService.getChatRoomEvents(chatRoomId, startAt)
+    const eventObjects = events.map((event) => {
+      return instanceToPlain(event)
+    })
 
     res.json({
-      result: events,
+      result: eventObjects,
     })
   }
 
