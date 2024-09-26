@@ -1,3 +1,4 @@
+import { instanceToPlain } from "class-transformer"
 import { RecordedEventMessage } from "../../webSocket/messages/recordedEventMessage"
 import { webSocketServer } from "../../webSocket/webSocketServer"
 import { RueJaiUser } from "../models/rueJaiUser"
@@ -13,7 +14,7 @@ class BroadcastingRepository {
     const webSocketConnections = webSocketServer.connections.filter((connection) =>
       rueJaiUsers.some((rueJaiUser) => connection.client.rueJaiUser.isEquals(rueJaiUser))
     )
-    const messageString = JSON.stringify(message)
+    const messageString = JSON.stringify(instanceToPlain(message))
 
     webSocketConnections.forEach((connection) => {
       connection.send(messageString)
