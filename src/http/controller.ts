@@ -33,9 +33,7 @@ class Controller {
     const latestRoomAndMessageEventRecordNumber = await this.chatService.getChatRoomLatestEventRecordInfo(chatRoomId)
 
     res.json({
-      result: {
-        latest_room_and_message_event_record_number: latestRoomAndMessageEventRecordNumber,
-      },
+      result: latestRoomAndMessageEventRecordNumber,
     })
   }
 
