@@ -1,10 +1,10 @@
 import { Expose } from "class-transformer"
-import { IsNumber, IsOptional, IsString } from "class-validator"
+import { IsOptional, IsString } from "class-validator"
 
 class ChatRoom {
   @Expose({ name: "id" })
-  @IsNumber()
-  readonly id: number
+  @IsString()
+  readonly id: string
 
   @Expose({ name: "name" })
   @IsString()
@@ -15,7 +15,7 @@ class ChatRoom {
   @IsString()
   readonly thumbnailUrl?: string
 
-  constructor(id: number, name: string, thumbnailUrl?: string) {
+  constructor(id: string, name: string, thumbnailUrl?: string) {
     this.id = id
     this.name = name
     this.thumbnailUrl = thumbnailUrl

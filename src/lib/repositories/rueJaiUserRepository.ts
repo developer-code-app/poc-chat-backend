@@ -36,7 +36,7 @@ class RueJaiUserRepository {
     )
   }
 
-  async getRueJaiUsersByChatRoom(chatRoomId: number): Promise<RueJaiUser[]> {
+  async getRueJaiUsersByChatRoom(chatRoomId: string): Promise<RueJaiUser[]> {
     const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOne({
       where: { id: chatRoomId },
       relations: ["chatRoomMembers", "chatRoomMembers.rueJaiUser"],

@@ -11,12 +11,12 @@ class RecordedEventMessage {
 
   @Expose({ name: "chat_room_id" })
   @IsNumber()
-  readonly chatRoomId: number
+  readonly chatRoomId: string
 
   @Expose({ name: "payload" })
   readonly payload: RecordedEvent
 
-  constructor(chatRoomId: number, payload: RecordedEvent) {
+  constructor(chatRoomId: string, payload: RecordedEvent) {
     this.type = "EVENT"
     this.chatRoomId = chatRoomId
     this.payload = payload

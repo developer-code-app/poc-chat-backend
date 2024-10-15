@@ -14,7 +14,7 @@ class EventRepository {
     }
   }
 
-  async getRoomAndMessageEvents(chatRoomId: number, startAt: number): Promise<RecordedEvent[]> {
+  async getRoomAndMessageEvents(chatRoomId: string, startAt: number): Promise<RecordedEvent[]> {
     const roomAndMessageEventEntities = await AppDataSource.getRepository(RoomAndMessageEventEntity)
       .createQueryBuilder("event")
       .where("event.chatRoomId = :chatRoomId", { chatRoomId })
@@ -25,7 +25,7 @@ class EventRepository {
     return roomAndMessageEventEntities.map((entity) => eventFromEntity(entity))
   }
 
-  async saveRoomAndMessageEvent(chatRoomId: number, event: ChatRoomEvent): Promise<RecordedEvent> {
+  async saveRoomAndMessageEvent(chatRoomId: string, event: ChatRoomEvent): Promise<RecordedEvent> {
     const roomAndMessageEventEntity = await AppDataSource.transaction(async (entityManager) => {
       const recordNumber = (await this.getLatestRoomAndMessageEventRecordNumber(chatRoomId)) + 1
       const params = {
@@ -46,7 +46,7 @@ class EventRepository {
     return eventFromEntity(roomAndMessageEventEntity)
   }
 
-  async getLatestRoomAndMessageEventRecordNumber(chatRoomId: number): Promise<number> {
+  async getLatestRoomAndMessageEventRecordNumber(chatRoomId: string): Promise<number> {
     const result = (await AppDataSource.getRepository(RoomAndMessageEventEntity)
       .createQueryBuilder("event")
       .select("MAX(event.recordNumber)", "latestRecordNumber")

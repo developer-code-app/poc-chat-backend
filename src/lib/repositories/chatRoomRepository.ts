@@ -11,7 +11,7 @@ class ChatRoomRepository {
     }
   }
 
-  async isChatRoomExist(chatRoomId: number): Promise<boolean> {
+  async isChatRoomExist(chatRoomId: string): Promise<boolean> {
     const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOne({
       where: { id: chatRoomId },
     })
@@ -19,7 +19,7 @@ class ChatRoomRepository {
     return !!chatRoomEntity
   }
 
-  async getChatRoom(chatRoomId: number): Promise<ChatRoom> {
+  async getChatRoom(chatRoomId: string): Promise<ChatRoom> {
     const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOneOrFail({
       where: { id: chatRoomId },
     })
@@ -61,7 +61,7 @@ class ChatRoomRepository {
   }
 
   async updateChatRoom(
-    chatRoomId: number,
+    chatRoomId: string,
     params: {
       name?: string
       thumbnailUrl?: string
@@ -81,7 +81,7 @@ class ChatRoomRepository {
     await AppDataSource.getRepository(ChatRoomEntity).update(chatRoomId, updateParams)
   }
 
-  async deleteChatRoom(chatRoomId: number) {
+  async deleteChatRoom(chatRoomId: string) {
     await AppDataSource.getRepository(ChatRoomEntity).delete(chatRoomId)
   }
 }

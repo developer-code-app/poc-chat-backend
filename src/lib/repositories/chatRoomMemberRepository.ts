@@ -15,7 +15,7 @@ class ChatRoomMemberRepository {
   }
 
   async isChatRoomMemberExist(
-    chatRoomId: number,
+    chatRoomId: string,
     rueJaiUserId: string,
     rueJaiUserType: RueJaiUserType
   ): Promise<boolean> {
@@ -27,7 +27,7 @@ class ChatRoomMemberRepository {
   }
 
   async getChatRoomMember(
-    chatRoomId: number,
+    chatRoomId: string,
     rueJaiUserId: string,
     rueJaiUserType: RueJaiUserType
   ): Promise<ChatRoomMember> {
@@ -51,7 +51,7 @@ class ChatRoomMemberRepository {
     )
   }
 
-  async getChatRoomMembers(chatRoomId: number): Promise<ChatRoomMember[]> {
+  async getChatRoomMembers(chatRoomId: string): Promise<ChatRoomMember[]> {
     const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).findOne({
       where: { id: chatRoomId },
       relations: ["chatRoomMembers", "chatRoomMembers.rueJaiUser"],
@@ -82,7 +82,7 @@ class ChatRoomMemberRepository {
   }
 
   async createChatRoomMember(
-    chatRoomId: number,
+    chatRoomId: string,
     rueJaiUserId: string,
     rueJaiUserType: RueJaiUserType,
     role: ChatRoomMemberRole,
@@ -121,7 +121,7 @@ class ChatRoomMemberRepository {
   }
 
   async updateChatRoomMember(
-    chatRoomId: number,
+    chatRoomId: string,
     rueJaiUserId: string,
     rueJaiUserType: RueJaiUserType,
     params: {
@@ -146,7 +146,7 @@ class ChatRoomMemberRepository {
     )
   }
 
-  async deleteChatRoomMember(chatRoomId: number, rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<void> {
+  async deleteChatRoomMember(chatRoomId: string, rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<void> {
     const chatRoomMemberEntity = await this.getChatRoomMember(chatRoomId, rueJaiUserId, rueJaiUserType)
 
     await AppDataSource.getRepository(ChatRoomMemberEntity).delete(chatRoomMemberEntity)

@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from "class-validator"
+import { IsOptional, IsString } from "class-validator"
 import { Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { RoomAndMessageEventEntity } from "./roomAndMessageEventEntity"
 import { RueJaiUserEntity } from "./rueJaiUserEntity"
@@ -9,8 +9,8 @@ import { ChatRoomMemberEntity } from "./chatRoomMemberEntity"
 })
 class ChatRoomEntity {
   @PrimaryGeneratedColumn()
-  @IsNumber()
-  id!: number
+  @IsString()
+  id!: string
 
   @OneToMany(() => RoomAndMessageEventEntity, (roomAndMessageEvent) => roomAndMessageEvent.chatRoom)
   roomAndMessageEvents!: RoomAndMessageEventEntity[]
