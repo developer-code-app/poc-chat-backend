@@ -345,6 +345,15 @@ class ChatService {
       throw new Error("Chatroom member not found")
     }
 
+    await this.chatRoomMemberRepository.updateChatRoomMember(
+      chatRoomId,
+      event.updatedMember.rueJaiUserId,
+      event.updatedMember.rueJaiUserType,
+      {
+        role: event.newRole,
+      }
+    )
+
     const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)

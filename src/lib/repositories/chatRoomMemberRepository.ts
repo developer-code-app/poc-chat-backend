@@ -1,4 +1,3 @@
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity"
 import { AppDataSource } from "../dataSource"
 import { ChatRoomMemberEntity } from "../entities/chatRoomMemberEntity"
 import { RueJaiUserEntity } from "../entities/rueJaiUserEntity"
@@ -24,31 +23,6 @@ class ChatRoomMemberRepository {
     })
 
     return !!chatRoomMemberEntity
-  }
-
-  async getChatRoomMember(
-    chatRoomId: string,
-    rueJaiUserId: string,
-    rueJaiUserType: RueJaiUserType
-  ): Promise<ChatRoomMember> {
-    const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity).findOneOrFail({
-      where: { chatRoom: { id: chatRoomId }, rueJaiUser: { rueJaiUserId, rueJaiUserType } },
-    })
-    const rueJaiUser = new RueJaiUser(
-      chatRoomMemberEntity.rueJaiUser.id,
-      chatRoomMemberEntity.rueJaiUser.rueJaiUserId,
-      chatRoomMemberEntity.rueJaiUser.rueJaiUserType,
-      chatRoomMemberEntity.rueJaiUser.rueJaiUserRole,
-      chatRoomMemberEntity.rueJaiUser.name,
-      chatRoomMemberEntity.rueJaiUser.thumbnailUrl ? chatRoomMemberEntity.rueJaiUser.thumbnailUrl : undefined
-    )
-
-    return new ChatRoomMember(
-      chatRoomMemberEntity.id,
-      rueJaiUser,
-      chatRoomMemberEntity.role,
-      chatRoomMemberEntity.lastReadMessageRecordNumber
-    )
   }
 
   async getChatRoomMembers(chatRoomId: string): Promise<ChatRoomMember[]> {
@@ -130,26 +104,28 @@ class ChatRoomMemberRepository {
     }
   ): Promise<void> {
     const { role, lastReadMessageRecordNumber } = params
-    const updateParams: QueryDeepPartialEntity<ChatRoomMemberEntity> = {}
+
+    const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity).findOneOrFail({
+      where: { chatRoom: { id: chatRoomId }, rueJaiUser: { rueJaiUserId, rueJaiUserType } },
+    })
 
     if (role !== undefined) {
-      updateParams.role = role
+      chatRoomMemberEntity.role = role
     }
 
     if (lastReadMessageRecordNumber !== undefined) {
-      updateParams.lastReadMessageRecordNumber = lastReadMessageRecordNumber
+      chatRoomMemberEntity.lastReadMessageRecordNumber = lastReadMessageRecordNumber
     }
 
-    await AppDataSource.getRepository(ChatRoomMemberEntity).update(
-      { chatRoom: { id: chatRoomId }, rueJaiUser: { rueJaiUserId, rueJaiUserType } },
-      updateParams
-    )
+    await AppDataSource.getRepository(ChatRoomMemberEntity).save(chatRoomMemberEntity)
   }
 
   async deleteChatRoomMember(chatRoomId: string, rueJaiUserId: string, rueJaiUserType: RueJaiUserType): Promise<void> {
-    const chatRoomMemberEntity = await this.getChatRoomMember(chatRoomId, rueJaiUserId, rueJaiUserType)
+    const chatRoomMemberEntity = await AppDataSource.getRepository(ChatRoomMemberEntity).findOneOrFail({
+      where: { chatRoom: { id: chatRoomId }, rueJaiUser: { rueJaiUserId, rueJaiUserType } },
+    })
 
-    await AppDataSource.getRepository(ChatRoomMemberEntity).delete(chatRoomMemberEntity)
+    await AppDataSource.getRepository(ChatRoomMemberEntity).delete(chatRoomMemberEntity.id)
   }
 }
 

@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer"
-import { IsEnum, IsInstance, IsNumber, IsOptional, IsString } from "class-validator"
+import { IsEnum, IsInstance, IsOptional, IsString } from "class-validator"
 
 import { ChatRoomMemberRole } from "../chatRoomMember"
 import { ChatRoomEvent } from "./chatRoomEvent"
@@ -75,7 +75,7 @@ class UpdateRoomEvent extends RoomEvent {
   @IsString()
   readonly thumbnailUrl?: string
 
-  constructor(id: string, owner: Owner, createdAt: Date, name: string, thumbnailUrl?: string) {
+  constructor(id: string, owner: Owner, createdAt: Date, name?: string, thumbnailUrl?: string) {
     super(id, owner, createdAt, EventType.UPDATE_ROOM)
 
     this.name = name
@@ -104,19 +104,19 @@ class UpdateMemberRoleEvent extends RoomEvent {
 
   @Expose({ name: "new_role" })
   @IsEnum(ChatRoomMemberRole)
-  readonly memberRole: ChatRoomMemberRole
+  readonly newRole: ChatRoomMemberRole
 
   constructor(
     id: string,
     owner: Owner,
     createdAt: Date,
     updatedMember: EventChatRoomMember,
-    memberRole: ChatRoomMemberRole
+    newRole: ChatRoomMemberRole
   ) {
     super(id, owner, createdAt, EventType.UPDATE_MEMBER_ROLE)
 
     this.updatedMember = updatedMember
-    this.memberRole = memberRole
+    this.newRole = newRole
   }
 }
 
