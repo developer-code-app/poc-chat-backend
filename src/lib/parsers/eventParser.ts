@@ -19,6 +19,7 @@ import {
   UninviteMemberEvent,
   EventChatRoomMember,
   UpdateMemberRoleEvent,
+  UpdateRoomEvent,
 } from "../models/events/roomEvent"
 import { RecordedEvent } from "../models/events/recordedEvent"
 import { RoomAndMessageEventEntity } from "../entities/roomAndMessageEventEntity"
@@ -53,7 +54,7 @@ const eventFromObject = (obj: unknown): ChatRoomEvent => {
       event = plainToInstance(CreateFileMessageEvent, obj)
       break
     }
-    case EventType.EDIT_TEXT_MESSAGE: {
+    case EventType.UPDATE_TEXT_MESSAGE: {
       event = plainToInstance(UpdateTextMessageEvent, obj)
       break
     }
@@ -69,8 +70,20 @@ const eventFromObject = (obj: unknown): ChatRoomEvent => {
       event = plainToInstance(CreateRoomEvent, obj)
       break
     }
+    case EventType.UPDATE_ROOM: {
+      event = plainToInstance(UpdateRoomEvent, obj)
+      break
+    }
     case EventType.INVITE_MEMBER: {
       event = plainToInstance(InviteMemberEvent, obj)
+      break
+    }
+    case EventType.UPDATE_MEMBER_ROLE: {
+      event = plainToInstance(UpdateMemberRoleEvent, obj)
+      break
+    }
+    case EventType.UNINVITE_MEMBER: {
+      event = plainToInstance(UninviteMemberEvent, obj)
       break
     }
     default:
@@ -131,7 +144,7 @@ const eventFromEntity = (entity: RoomAndMessageEventEntity): RecordedEvent => {
 
       break
     }
-    case EventType.EDIT_TEXT_MESSAGE: {
+    case EventType.UPDATE_TEXT_MESSAGE: {
       const { text, updatedTextMessageAddedByEventRecordNumber } = content as {
         text: string
         updatedTextMessageAddedByEventRecordNumber: number
@@ -206,7 +219,7 @@ const eventEntityContentFromEvent = (event: ChatRoomEvent): unknown => {
 
       return { url }
     }
-    case EventType.EDIT_TEXT_MESSAGE: {
+    case EventType.UPDATE_TEXT_MESSAGE: {
       const { text } = event as UpdateTextMessageEvent
 
       return { text }

@@ -4,7 +4,6 @@ import { WebSocket } from "ws"
 import { WebSocketClient } from "../lib/models/webSocketClient"
 import { EventType } from "../lib/models/events/eventType"
 import { ChatService } from "../lib/services/chatService"
-import { InviteMemberEvent, UninviteMemberEvent, UpdateMemberRoleEvent } from "../lib/models/events/roomEvent"
 import {
   CreateFileMessageEvent,
   CreatePhotoMessageEvent,
@@ -31,37 +30,6 @@ class Controller {
     const chatRoomId = message.chatRoomId
 
     switch (message.payload.type) {
-      case EventType.CREATE_ROOM:
-        throw new Error("Not Implemented")
-      case EventType.UPDATE_ROOM:
-        throw new Error("Not Implemented")
-      case EventType.INVITE_MEMBER: {
-        const inviteMemberEvent = message.payload as InviteMemberEvent
-
-        await this.chatService.inviteMember(chatRoomId, inviteMemberEvent)
-
-        console.log(`${this.client} invited ${inviteMemberEvent.invitedMember} to ChatRoom: ${chatRoomId}`)
-
-        break
-      }
-      case EventType.UPDATE_MEMBER_ROLE: {
-        const updateMemberRoleEvent = message.payload as UpdateMemberRoleEvent
-
-        await this.chatService.updateMemberRole(chatRoomId, updateMemberRoleEvent)
-
-        console.log(`${this.client} updated -> ${updateMemberRoleEvent.updatedMember} ChatRoom: ${chatRoomId}`)
-
-        break
-      }
-      case EventType.UNINVITE_MEMBER: {
-        const uninviteMemberEvent = message.payload as UninviteMemberEvent
-
-        await this.chatService.uninviteMember(chatRoomId, uninviteMemberEvent)
-
-        console.log(`${this.client} uninvited ${uninviteMemberEvent.uninvitedMember} from ChatRoom: ${chatRoomId}`)
-
-        break
-      }
       case EventType.CREATE_TEXT_MESSAGE: {
         const createTextMessageEvent = message.payload as CreateTextMessageEvent
 
@@ -107,10 +75,10 @@ class Controller {
 
         break
       }
-      case EventType.EDIT_TEXT_MESSAGE: {
+      case EventType.UPDATE_TEXT_MESSAGE: {
         const updateTextMessageEvent = message.payload as UpdateTextMessageEvent
 
-        await this.chatService.editTextMessage(chatRoomId, updateTextMessageEvent)
+        await this.chatService.updateTextMessage(chatRoomId, updateTextMessageEvent)
 
         console.log(`${this.client} updated text message in ChatRoom: ${chatRoomId}`)
 
@@ -134,7 +102,7 @@ class Controller {
         break
       }
       default:
-        console.log("Unknown Event")
+        console.log("Unknown Supported Event")
     }
   }
 

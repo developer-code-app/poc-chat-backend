@@ -1,7 +1,13 @@
 import { Request, Response } from "express"
 
 import { eventFromObject } from "../lib/parsers/eventParser"
-import { CreateRoomEvent } from "../lib/models/events/roomEvent"
+import {
+  CreateRoomEvent,
+  InviteMemberEvent,
+  UninviteMemberEvent,
+  UpdateMemberRoleEvent,
+  UpdateRoomEvent,
+} from "../lib/models/events/roomEvent"
 import { ChatService } from "../lib/services/chatService"
 import { instanceToPlain } from "class-transformer"
 import { ChatRoomState } from "../lib/models/chatRoomState"
@@ -30,24 +36,23 @@ class Controller {
     })
   }
 
-  getChatRoomMembers = async (req: Request, res: Response) => {
+  getChatRoomProfile = async (req: Request, res: Response) => {
+    const rueJaiUser = req.user
     const chatRoomId = req.params.chatRoomId
 
-    const members = await this.chatService.getChatRoomMembers(chatRoomId)
-    const memberObjects = members.map((member) => {
-      return instanceToPlain(member)
-    })
+    const chatRoomProfile = await this.chatService.getChatRoomProfile(chatRoomId, rueJaiUser)
 
     res.json({
-      result: memberObjects,
+      result: chatRoomProfile,
     })
   }
 
   getChatRoomEvents = async (req: Request, res: Response) => {
+    const rueJaiUser = req.user
     const chatRoomId = req.params.chatRoomId
     const startAt = 0
 
-    const events = await this.chatService.getChatRoomEvents(chatRoomId, startAt)
+    const events = await this.chatService.getChatRoomEvents(chatRoomId, startAt, rueJaiUser)
     const eventObjects = events.map((event) => {
       return instanceToPlain(event)
     })
@@ -58,16 +63,29 @@ class Controller {
   }
 
   createChatRoom = async (req: Request, res: Response) => {
+    const rueJaiUser = req.user
     const event = eventFromObject(req.body) as CreateRoomEvent
 
-    const chatRoom = await this.chatService.createChatRoom(event)
+    const chatRoomState = await this.chatService.createChatRoom(event, rueJaiUser)
 
     res.json({
-      result: {
-        id: chatRoom.id,
-        name: chatRoom.name,
-        thumbnailUrl: chatRoom.thumbnailUrl,
-      },
+      result: chatRoomState,
+    })
+  }
+
+  updateChatRoom = async (req: Request, res: Response) => {
+    const rueJaiUser = req.user
+    const chatRoomId = req.params.chatRoomId
+    const event = eventFromObject(req.body) as
+      | UpdateRoomEvent
+      | InviteMemberEvent
+      | UpdateMemberRoleEvent
+      | UninviteMemberEvent
+
+    const chatRoomState = await this.chatService.updateChatRoom(chatRoomId, event, rueJaiUser)
+
+    res.json({
+      result: chatRoomState,
     })
   }
 }

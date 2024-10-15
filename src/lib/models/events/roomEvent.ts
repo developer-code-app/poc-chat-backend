@@ -64,6 +64,25 @@ class CreateRoomEvent extends RoomEvent {
   }
 }
 
+class UpdateRoomEvent extends RoomEvent {
+  @Expose({ name: "name" })
+  @IsOptional()
+  @IsString()
+  readonly name?: string
+
+  @Expose({ name: "thumbnail_url" })
+  @IsOptional()
+  @IsString()
+  readonly thumbnailUrl?: string
+
+  constructor(id: string, owner: Owner, createdAt: Date, name: string, thumbnailUrl?: string) {
+    super(id, owner, createdAt, EventType.UPDATE_ROOM)
+
+    this.name = name
+    this.thumbnailUrl = thumbnailUrl
+  }
+}
+
 class InviteMemberEvent extends RoomEvent {
   @Expose({ name: "member" })
   @IsInstance(EventChatRoomMember)
@@ -112,4 +131,12 @@ class UninviteMemberEvent extends RoomEvent {
   }
 }
 
-export { RoomEvent, CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent, UninviteMemberEvent, EventChatRoomMember }
+export {
+  RoomEvent,
+  CreateRoomEvent,
+  UpdateRoomEvent,
+  InviteMemberEvent,
+  UpdateMemberRoleEvent,
+  UninviteMemberEvent,
+  EventChatRoomMember,
+}

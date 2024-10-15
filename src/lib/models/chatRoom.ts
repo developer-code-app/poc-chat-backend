@@ -15,10 +15,15 @@ class ChatRoom {
   @IsString()
   readonly thumbnailUrl?: string
 
-  constructor(id: string, name: string, thumbnailUrl?: string) {
+  @Expose({ name: "profile_hash" })
+  @IsString()
+  readonly profileHash: string
+
+  constructor(id: string, name: string, profileHash: string, thumbnailUrl?: string) {
     this.id = id
     this.name = name
     this.thumbnailUrl = thumbnailUrl
+    this.profileHash = profileHash
   }
 }
 

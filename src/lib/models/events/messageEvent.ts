@@ -98,7 +98,7 @@ class UpdateTextMessageEvent extends UpdateMessageEvent {
   readonly text: string
 
   constructor(id: string, owner: Owner, createdAt: Date, updatedMessageAddedByEventRecordNumber: number, text: string) {
-    super(id, owner, createdAt, EventType.EDIT_TEXT_MESSAGE, updatedMessageAddedByEventRecordNumber)
+    super(id, owner, createdAt, EventType.UPDATE_TEXT_MESSAGE, updatedMessageAddedByEventRecordNumber)
 
     this.text = text
   }

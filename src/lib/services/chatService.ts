@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
+import { randomUUID } from "crypto"
 import { AppDataSource } from "../dataSource"
-import { ChatRoom } from "../models/chatRoom"
+import { ChatRoomProfile } from "../models/chatRoomProfile"
 import { ChatRoomState } from "../models/chatRoomState"
 import {
   CreateFileMessageEvent,
@@ -17,6 +18,7 @@ import {
   InviteMemberEvent,
   UninviteMemberEvent,
   UpdateMemberRoleEvent,
+  UpdateRoomEvent,
 } from "../models/events/roomEvent"
 import { RueJaiUser } from "../models/rueJaiUser"
 import { ChatRoomMemberRepository } from "../repositories/chatRoomMemberRepository"
@@ -32,7 +34,12 @@ class ChatService {
   private chatRoomMemberRepository = new ChatRoomMemberRepository()
 
   async getChatRoomStates(rueJaiUser: RueJaiUser): Promise<ChatRoomState[]> {
-    const chatRoomStates = await this.chatRoomRepository.getChatRoomStatesByUser(rueJaiUser)
+    const chatRooms = await this.chatRoomRepository.getChatRoomsByUser(rueJaiUser)
+    const chatRoomStates = await Promise.all(
+      chatRooms.map(async (chatRoom) => {
+        return await this.getChatRoomState(chatRoom.id, rueJaiUser)
+      })
+    )
 
     return chatRoomStates
   }
@@ -48,30 +55,57 @@ class ChatService {
       throw new Error("Unauthorized chat room access")
     }
 
-    return this.chatRoomRepository.getChatRoomState(chatRoomId)
+    const [chatRoom, latestRoomAndMessageEventRecordNumber] = await Promise.all([
+      this.chatRoomRepository.getChatRoom(chatRoomId),
+      this.chatRoomRepository.getLatestRoomAndMessageEventRecordNumber(chatRoomId),
+    ])
+
+    return new ChatRoomState(chatRoom.id, latestRoomAndMessageEventRecordNumber, chatRoom.profileHash)
   }
 
-  async getChatRoomMembers(chatRoomId: string) {
+  async getChatRoomProfile(chatRoomId: string, rueJaiUser: RueJaiUser): Promise<ChatRoomProfile> {
+    if (
+      !(await this.chatRoomMemberRepository.isChatRoomMemberExist(
+        chatRoomId,
+        rueJaiUser.rueJaiUserId,
+        rueJaiUser.rueJaiUserType
+      ))
+    ) {
+      throw new Error("Unauthorized chat room access")
+    }
+
+    const [chatRoom, members] = await Promise.all([
+      this.chatRoomRepository.getChatRoom(chatRoomId),
+      this.chatRoomMemberRepository.getChatRoomMembers(chatRoomId),
+    ])
+
+    return new ChatRoomProfile(chatRoom.id, chatRoom.name, members, chatRoom.profileHash, chatRoom.thumbnailUrl)
+  }
+
+  async getChatRoomEvents(chatRoomId: string, startAt: number, rueJaiUser: RueJaiUser) {
     if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
       throw new Error("Chat room not found")
     }
 
-    return this.chatRoomMemberRepository.getChatRoomMembers(chatRoomId)
-  }
-
-  async getChatRoomEvents(chatRoomId: string, startAt: number) {
-    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
-      throw new Error("Chat room not found")
+    if (
+      !(await this.chatRoomMemberRepository.isChatRoomMemberExist(
+        chatRoomId,
+        rueJaiUser.rueJaiUserId,
+        rueJaiUser.rueJaiUserType
+      ))
+    ) {
+      throw new Error("Unauthorized chat room access")
     }
 
     return this.chatRoomRepository.getRoomAndMessageEvents(chatRoomId, startAt)
   }
 
-  async createChatRoom(event: CreateRoomEvent): Promise<ChatRoom> {
+  async createChatRoom(event: CreateRoomEvent, rueJaiUser: RueJaiUser): Promise<ChatRoomState> {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
-    const chatRoom = await this.chatRoomRepository.createChatRoom(event.name, event.thumbnailUrl)
+    const profileHash = randomUUID().toString()
+    const chatRoom = await this.chatRoomRepository.createChatRoom(event.name, profileHash, event.thumbnailUrl)
     await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoom.id, event)
 
     event.members.forEach(async (member) => {
@@ -86,79 +120,45 @@ class ChatService {
 
     await queryRunner.commitTransaction()
 
-    return chatRoom
+    return this.getChatRoomState(chatRoom.id, rueJaiUser)
   }
 
-  async inviteMember(chatRoomId: string, event: InviteMemberEvent) {
-    const queryRunner = AppDataSource.createQueryRunner()
-    await queryRunner.startTransaction()
-
-    if (
-      !(await this.rueJaiUserRepository.isRueJaiUserExist(
-        event.invitedMember.rueJaiUserId,
-        event.invitedMember.rueJaiUserType
-      ))
-    ) {
-      throw new Error("RueJai User not found")
-    }
-
-    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
-      throw new Error("Chat room not found")
-    }
-
-    await this.chatRoomMemberRepository.createChatRoomMember(
-      chatRoomId,
-      event.invitedMember.rueJaiUserId,
-      event.invitedMember.rueJaiUserType,
-      event.invitedMember.role,
-      0
-    )
-
-    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
-
-    await queryRunner.commitTransaction()
-
-    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
-  }
-
-  async updateMemberRole(chatRoomId: string, event: UpdateMemberRoleEvent) {
+  async updateChatRoom(
+    chatRoomId: string,
+    event: UpdateRoomEvent | InviteMemberEvent | UpdateMemberRoleEvent | UninviteMemberEvent,
+    rueJaiUser: RueJaiUser
+  ): Promise<ChatRoomState> {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
     if (
       !(await this.chatRoomMemberRepository.isChatRoomMemberExist(
         chatRoomId,
-        event.updatedMember.rueJaiUserId,
-        event.updatedMember.rueJaiUserType
+        rueJaiUser.rueJaiUserId,
+        rueJaiUser.rueJaiUserType
       ))
     ) {
-      throw new Error("Chatroom member not found")
+      throw new Error("Unauthorized chat room update")
     }
 
-    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    if (event instanceof UpdateRoomEvent) {
+      await this.updateRoomBasicInfo(chatRoomId, event)
+    } else if (event instanceof InviteMemberEvent) {
+      await this.inviteMember(chatRoomId, event)
+    } else if (event instanceof UpdateMemberRoleEvent) {
+      await this.updateMemberRole(chatRoomId, event)
+    } else if (event instanceof UninviteMemberEvent) {
+      await this.uninviteMember(chatRoomId, event)
+    } else {
+      throw new Error("Unknown update chat room event type")
+    }
+
+    const newProfileHash = randomUUID().toString()
+    await this.chatRoomRepository.updateChatRoomProfileHash(chatRoomId, newProfileHash)
 
     await queryRunner.commitTransaction()
 
-    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
-  }
-
-  async uninviteMember(chatRoomId: string, event: UninviteMemberEvent) {
-    const { rueJaiUserId, rueJaiUserType } = event.uninvitedMember
-
-    const queryRunner = AppDataSource.createQueryRunner()
-    await queryRunner.startTransaction()
-
-    if (!(await this.chatRoomMemberRepository.isChatRoomMemberExist(chatRoomId, rueJaiUserId, rueJaiUserType))) {
-      throw new Error("Chatroom member not found")
-    }
-
-    await this.chatRoomMemberRepository.deleteChatRoomMember(chatRoomId, rueJaiUserId, rueJaiUserType)
-
-    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
-
-    await queryRunner.commitTransaction()
-
-    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
+    return this.getChatRoomState(chatRoomId, rueJaiUser)
   }
 
   async createTextMessage(chatRoomId: string, event: CreateTextMessageEvent) {
@@ -236,7 +236,7 @@ class ChatService {
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async editTextMessage(chatRoomId: string, event: UpdateTextMessageEvent) {
+  async updateTextMessage(chatRoomId: string, event: UpdateTextMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -290,6 +290,78 @@ class ChatService {
     )
 
     await queryRunner.commitTransaction()
+  }
+
+  private async updateRoomBasicInfo(chatRoomId: string, event: UpdateRoomEvent) {
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.chatRoomRepository.updateChatRoomBasicInfo(chatRoomId, {
+      name: event.name,
+      thumbnailUrl: event.thumbnailUrl,
+    })
+
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
+  }
+
+  private async inviteMember(chatRoomId: string, event: InviteMemberEvent) {
+    if (
+      !(await this.rueJaiUserRepository.isRueJaiUserExist(
+        event.invitedMember.rueJaiUserId,
+        event.invitedMember.rueJaiUserType
+      ))
+    ) {
+      throw new Error("RueJai User not found")
+    }
+
+    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
+      throw new Error("Chat room not found")
+    }
+
+    await this.chatRoomMemberRepository.createChatRoomMember(
+      chatRoomId,
+      event.invitedMember.rueJaiUserId,
+      event.invitedMember.rueJaiUserType,
+      event.invitedMember.role,
+      0
+    )
+
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
+  }
+
+  private async updateMemberRole(chatRoomId: string, event: UpdateMemberRoleEvent) {
+    if (
+      !(await this.chatRoomMemberRepository.isChatRoomMemberExist(
+        chatRoomId,
+        event.updatedMember.rueJaiUserId,
+        event.updatedMember.rueJaiUserType
+      ))
+    ) {
+      throw new Error("Chatroom member not found")
+    }
+
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
+  }
+
+  private async uninviteMember(chatRoomId: string, event: UninviteMemberEvent) {
+    const { rueJaiUserId, rueJaiUserType } = event.uninvitedMember
+
+    if (!(await this.chatRoomMemberRepository.isChatRoomMemberExist(chatRoomId, rueJaiUserId, rueJaiUserType))) {
+      throw new Error("Chatroom member not found")
+    }
+
+    await this.chatRoomMemberRepository.deleteChatRoomMember(chatRoomId, rueJaiUserId, rueJaiUserType)
+
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
+
+    await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 }
 

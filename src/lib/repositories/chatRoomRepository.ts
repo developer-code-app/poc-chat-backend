@@ -3,7 +3,6 @@ import { AppDataSource } from "../dataSource"
 import { ChatRoomEntity } from "../entities/chatRoomEntity"
 import { ChatRoom } from "../models/chatRoom"
 import { RueJaiUser } from "../models/rueJaiUser"
-import { ChatRoomState } from "../models/chatRoomState"
 import { RoomAndMessageEventEntity } from "../entities/roomAndMessageEventEntity"
 import { ChatRoomEvent } from "../models/events/chatRoomEvent"
 import { RecordedEvent } from "../models/events/recordedEvent"
@@ -29,18 +28,11 @@ class ChatRoomRepository {
       where: { id: chatRoomId },
     })
 
-    return new ChatRoom(chatRoomEntity.id, chatRoomEntity.name, chatRoomEntity.thumbnailUrl)
-  }
-
-  async getChatRoomState(chatRoomId: string): Promise<ChatRoomState> {
-    const chatRoomEntity = AppDataSource.getRepository(ChatRoomEntity).findOneOrFail({
-      where: { id: chatRoomId },
-    })
-    const latestRoomAndMessageEventRecordNumber = this.getLatestRoomAndMessageEventRecordNumber(chatRoomId)
-
-    return Promise.all([chatRoomEntity, latestRoomAndMessageEventRecordNumber]).then(
-      ([chatRoomEntity, latestRoomAndMessageEventRecordNumber]) =>
-        new ChatRoomState(chatRoomEntity.id, latestRoomAndMessageEventRecordNumber, chatRoomEntity.profileHash)
+    return new ChatRoom(
+      chatRoomEntity.id,
+      chatRoomEntity.name,
+      chatRoomEntity.profileHash,
+      chatRoomEntity.thumbnailUrl ? chatRoomEntity.thumbnailUrl : undefined
     )
   }
 
@@ -59,31 +51,28 @@ class ChatRoomRepository {
         new ChatRoom(
           chatRoomEntity.id,
           chatRoomEntity.name,
+          chatRoomEntity.profileHash,
           chatRoomEntity.thumbnailUrl ? chatRoomEntity.thumbnailUrl : undefined
         )
     )
   }
 
-  async getChatRoomStatesByUser(rueJaiUser: RueJaiUser): Promise<ChatRoomState[]> {
-    const chatRooms = await this.getChatRoomsByUser(rueJaiUser)
-
-    return Promise.all(chatRooms.map((chatRoom) => this.getChatRoomState(chatRoom.id)))
-  }
-
-  async createChatRoom(name: string, thumbnailUrl?: string): Promise<ChatRoom> {
+  async createChatRoom(name: string, profileHash: string, thumbnailUrl?: string): Promise<ChatRoom> {
     const chatRoomEntity = await AppDataSource.getRepository(ChatRoomEntity).save({
       name,
       thumbnailUrl,
+      profileHash,
     })
 
     return new ChatRoom(
       chatRoomEntity.id,
       chatRoomEntity.name,
+      chatRoomEntity.profileHash,
       chatRoomEntity.thumbnailUrl ? chatRoomEntity.thumbnailUrl : undefined
     )
   }
 
-  async updateChatRoom(
+  async updateChatRoomBasicInfo(
     chatRoomId: string,
     params: {
       name?: string
@@ -102,6 +91,12 @@ class ChatRoomRepository {
     }
 
     await AppDataSource.getRepository(ChatRoomEntity).update(chatRoomId, updateParams)
+  }
+
+  async updateChatRoomProfileHash(chatRoomId: string, profileHash: string): Promise<void> {
+    await AppDataSource.getRepository(ChatRoomEntity).update(chatRoomId, {
+      profileHash,
+    })
   }
 
   async deleteChatRoom(chatRoomId: string) {
