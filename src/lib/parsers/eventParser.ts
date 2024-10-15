@@ -264,6 +264,11 @@ const eventEntityContentFromEvent = (event: ChatRoomEvent): unknown => {
 
       return { name, members, thumbnailUrl }
     }
+    case EventType.UPDATE_ROOM: {
+      const { name, thumbnailUrl } = event as CreateRoomEvent
+
+      return { name, thumbnailUrl }
+    }
     case EventType.INVITE_MEMBER: {
       const { invitedMember } = event as InviteMemberEvent
 
