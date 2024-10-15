@@ -4,7 +4,7 @@ import { WebSocket } from "ws"
 import { WebSocketClient } from "../lib/models/webSocketClient"
 import { EventType } from "../lib/models/events/eventType"
 import { ChatService } from "../lib/services/chatService"
-import { InviteMemberEvent, RemoveMemberEvent, UpdateMemberRoleEvent } from "../lib/models/events/roomEvent"
+import { InviteMemberEvent, UninviteMemberEvent, UpdateMemberRoleEvent } from "../lib/models/events/roomEvent"
 import {
   CreateFileMessageEvent,
   CreatePhotoMessageEvent,
@@ -33,6 +33,8 @@ class Controller {
     switch (message.payload.type) {
       case EventType.CREATE_ROOM:
         throw new Error("Not Implemented")
+      case EventType.UPDATE_ROOM:
+        throw new Error("Not Implemented")
       case EventType.INVITE_MEMBER: {
         const inviteMemberEvent = message.payload as InviteMemberEvent
 
@@ -42,7 +44,7 @@ class Controller {
 
         break
       }
-      case EventType.EDIT_MEMBER_ROLE: {
+      case EventType.UPDATE_MEMBER_ROLE: {
         const updateMemberRoleEvent = message.payload as UpdateMemberRoleEvent
 
         await this.chatService.updateMemberRole(chatRoomId, updateMemberRoleEvent)
@@ -51,12 +53,12 @@ class Controller {
 
         break
       }
-      case EventType.REMOVE_MEMBER: {
-        const removeMemberEvent = message.payload as RemoveMemberEvent
+      case EventType.UNINVITE_MEMBER: {
+        const uninviteMemberEvent = message.payload as UninviteMemberEvent
 
-        await this.chatService.removeMember(chatRoomId, removeMemberEvent)
+        await this.chatService.uninviteMember(chatRoomId, uninviteMemberEvent)
 
-        console.log(`${this.client} removed ${removeMemberEvent.removedMember} from ChatRoom: ${chatRoomId}`)
+        console.log(`${this.client} uninvited ${uninviteMemberEvent.uninvitedMember} from ChatRoom: ${chatRoomId}`)
 
         break
       }

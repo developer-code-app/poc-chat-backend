@@ -8,9 +8,10 @@ enum EventType {
   DELETE_MESSAGE = "DELETE_MESSAGE",
   READ_MESSAGE = "READ_MESSAGE",
   CREATE_ROOM = "CREATE_ROOM",
-  EDIT_MEMBER_ROLE = "EDIT_MEMBER_ROLE",
+  UPDATE_ROOM = "UPDATE_ROOM",
   INVITE_MEMBER = "INVITE_MEMBER",
-  REMOVE_MEMBER = "REMOVE_MEMBER",
+  UPDATE_MEMBER_ROLE = "UPDATE_MEMBER_ROLE",
+  UNINVITE_MEMBER = "UNINVITE_MEMBER",
 }
 
 const eventTypeFromString = (str: string): EventType => {
@@ -38,12 +39,14 @@ const eventTypeFromString = (str: string): EventType => {
       return EventType.READ_MESSAGE
     case "CREATE_ROOM":
       return EventType.CREATE_ROOM
-    case "EDIT_MEMBER_ROLE":
-      return EventType.EDIT_MEMBER_ROLE
+    case "UPDATE_ROOM":
+      return EventType.UPDATE_ROOM
     case "INVITE_MEMBER":
       return EventType.INVITE_MEMBER
-    case "REMOVE_MEMBER":
-      return EventType.REMOVE_MEMBER
+    case "UPDATE_MEMBER_ROLE":
+      return EventType.UPDATE_MEMBER_ROLE
+    case "UNINVITE_MEMBER":
+      return EventType.UNINVITE_MEMBER
     default:
       throw new Error("Invalid event type")
   }

@@ -16,7 +16,7 @@ import { ReadMessageEvent } from "../models/events/readEvent"
 import {
   CreateRoomEvent,
   InviteMemberEvent,
-  RemoveMemberEvent,
+  UninviteMemberEvent,
   EventChatRoomMember,
   UpdateMemberRoleEvent,
 } from "../models/events/roomEvent"
@@ -231,15 +231,15 @@ const eventEntityContentFromEvent = (event: ChatRoomEvent): unknown => {
 
       return { invitedMember }
     }
-    case EventType.EDIT_MEMBER_ROLE: {
+    case EventType.UPDATE_MEMBER_ROLE: {
       const { updatedMember } = event as UpdateMemberRoleEvent
 
       return { updatedMember }
     }
-    case EventType.REMOVE_MEMBER: {
-      const { removedMember } = event as RemoveMemberEvent
+    case EventType.UNINVITE_MEMBER: {
+      const { uninvitedMember } = event as UninviteMemberEvent
 
-      return { removedMember }
+      return { uninvitedMember }
     }
     default:
       throw new Error(`Unknown event type`)

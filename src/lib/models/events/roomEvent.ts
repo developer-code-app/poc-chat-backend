@@ -93,23 +93,23 @@ class UpdateMemberRoleEvent extends RoomEvent {
     updatedMember: EventChatRoomMember,
     memberRole: ChatRoomMemberRole
   ) {
-    super(id, owner, createdAt, EventType.EDIT_MEMBER_ROLE)
+    super(id, owner, createdAt, EventType.UPDATE_MEMBER_ROLE)
 
     this.updatedMember = updatedMember
     this.memberRole = memberRole
   }
 }
 
-class RemoveMemberEvent extends RoomEvent {
-  @Expose({ name: "removed_member_record_number" })
+class UninviteMemberEvent extends RoomEvent {
+  @Expose({ name: "uninvited_member_record_number" })
   @IsNumber()
-  readonly removedMember: EventChatRoomMember
+  readonly uninvitedMember: EventChatRoomMember
 
-  constructor(id: string, owner: Owner, createdAt: Date, removedMember: EventChatRoomMember) {
-    super(id, owner, createdAt, EventType.REMOVE_MEMBER)
+  constructor(id: string, owner: Owner, createdAt: Date, uninvitedMember: EventChatRoomMember) {
+    super(id, owner, createdAt, EventType.UNINVITE_MEMBER)
 
-    this.removedMember = removedMember
+    this.uninvitedMember = uninvitedMember
   }
 }
 
-export { RoomEvent, CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent, RemoveMemberEvent, EventChatRoomMember }
+export { RoomEvent, CreateRoomEvent, InviteMemberEvent, UpdateMemberRoleEvent, UninviteMemberEvent, EventChatRoomMember }

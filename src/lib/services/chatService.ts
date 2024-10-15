@@ -14,7 +14,7 @@ import { ReadMessageEvent } from "../models/events/readEvent"
 import {
   CreateRoomEvent,
   InviteMemberEvent,
-  RemoveMemberEvent,
+  UninviteMemberEvent,
   UpdateMemberRoleEvent,
 } from "../models/events/roomEvent"
 import { RueJaiUser } from "../models/rueJaiUser"
@@ -135,8 +135,8 @@ class ChatService {
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async removeMember(chatRoomId: number, event: RemoveMemberEvent) {
-    const { rueJaiUserId, rueJaiUserType } = event.removedMember
+  async uninviteMember(chatRoomId: number, event: UninviteMemberEvent) {
+    const { rueJaiUserId, rueJaiUserType } = event.uninvitedMember
 
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
