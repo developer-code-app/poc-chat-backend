@@ -32,7 +32,7 @@ class Controller {
     const chatRoomState = await this.chatService.getChatRoomState(chatRoomId, rueJaiUser)
 
     res.json({
-      result: chatRoomState,
+      result: instanceToPlain(chatRoomState),
     })
   }
 
@@ -43,7 +43,7 @@ class Controller {
     const chatRoomProfile = await this.chatService.getChatRoomProfile(chatRoomId, rueJaiUser)
 
     res.json({
-      result: chatRoomProfile,
+      result: instanceToPlain(chatRoomProfile),
     })
   }
 
@@ -69,7 +69,7 @@ class Controller {
     const chatRoomState = await this.chatService.createChatRoom(event, rueJaiUser)
 
     res.json({
-      result: chatRoomState,
+      result: instanceToPlain(chatRoomState),
     })
   }
 
@@ -85,7 +85,7 @@ class Controller {
     const chatRoomState = await this.chatService.updateChatRoom(chatRoomId, event, rueJaiUser)
 
     res.json({
-      result: chatRoomState,
+      result: instanceToPlain(chatRoomState),
     })
   }
 }

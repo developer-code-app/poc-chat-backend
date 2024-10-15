@@ -73,7 +73,7 @@ class ChatRoomMemberRepository {
             member.rueJaiUser.rueJaiUserType,
             member.rueJaiUser.rueJaiUserRole,
             member.rueJaiUser.name,
-            member.rueJaiUser.thumbnailUrl
+            member.rueJaiUser.thumbnailUrl ? member.rueJaiUser.thumbnailUrl : undefined
           ),
           member.role, // Role in the chat room
           member.lastReadMessageRecordNumber // Last read message record number (optional)
