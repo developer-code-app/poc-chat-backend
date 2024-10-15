@@ -20,16 +20,15 @@ function createRouter() {
 
   router.get("/chat-rooms", asyncHandler(controller.getChatRooms))
 
-  router.get(
-    "/chat-rooms/:chatRoomId/latest-event-record-info",
-    asyncHandler(controller.getChatRoomLatestEventRecordInfo)
-  )
+  router.get("/chat-rooms/:chatRoomId/state", asyncHandler(controller.getChatRoomState))
 
-  router.get("/chat-rooms/:chatRoomId/members", asyncHandler(controller.getChatRoomMembers))
+  router.get("/chat-rooms/:chatRoomId/profile", asyncHandler(controller.getChatRoomProfile))
 
   router.get("/chat-rooms/:chatRoomId/events", asyncHandler(controller.getChatRoomEvents))
 
   router.post("/chat-rooms", asyncHandler(controller.createChatRoom))
+
+  router.post("/chat-rooms/:chatRoomId", asyncHandler(controller.updateChatRoom))
 
   return router
 }
