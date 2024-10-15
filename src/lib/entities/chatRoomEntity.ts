@@ -28,6 +28,10 @@ class ChatRoomEntity {
   @IsString()
   thumbnailUrl?: string
 
+  @Column()
+  @IsString()
+  profileHash!: string
+
   get rueJaiUsers(): RueJaiUserEntity[] {
     return this.chatRoomMembers.map((chatRoomMember) => chatRoomMember.rueJaiUser)
   }

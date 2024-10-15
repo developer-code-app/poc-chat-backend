@@ -3,8 +3,8 @@ import { Request, Response } from "express"
 import { eventFromObject } from "../lib/parsers/eventParser"
 import { CreateRoomEvent } from "../lib/models/events/roomEvent"
 import { ChatService } from "../lib/services/chatService"
-import { ChatRoom } from "../lib/models/chatRoom"
 import { instanceToPlain } from "class-transformer"
+import { ChatRoomState } from "../lib/models/chatRoomState"
 
 class Controller {
   private chatService = new ChatService()
@@ -12,33 +12,26 @@ class Controller {
   getChatRooms = async (req: Request, res: Response) => {
     const rueJaiUser = req.user
 
-    const chatRooms: ChatRoom[] = await this.chatService.getChatRooms(rueJaiUser)
+    const chatRoomStates: ChatRoomState[] = await this.chatService.getChatRoomStates(rueJaiUser)
 
     res.json({
-      result: chatRooms.map((chatRoom) => {
-        const { id, name, thumbnailUrl } = chatRoom
-
-        return {
-          id,
-          name,
-          thumbnailUrl,
-        }
-      }),
+      result: chatRoomStates.map((chatRoomState) => instanceToPlain(chatRoomState)),
     })
   }
 
-  getChatRoomLatestEventRecordInfo = async (req: Request, res: Response) => {
-    const chatRoomId = parseInt(req.params.chatRoomId)
+  getChatRoomState = async (req: Request, res: Response) => {
+    const rueJaiUser = req.user
+    const chatRoomId = req.params.chatRoomId
 
-    const latestRoomAndMessageEventRecordNumber = await this.chatService.getChatRoomLatestEventRecordInfo(chatRoomId)
+    const chatRoomState = await this.chatService.getChatRoomState(chatRoomId, rueJaiUser)
 
     res.json({
-      result: latestRoomAndMessageEventRecordNumber,
+      result: chatRoomState,
     })
   }
 
   getChatRoomMembers = async (req: Request, res: Response) => {
-    const chatRoomId = parseInt(req.params.chatRoomId)
+    const chatRoomId = req.params.chatRoomId
 
     const members = await this.chatService.getChatRoomMembers(chatRoomId)
     const memberObjects = members.map((member) => {
@@ -51,7 +44,7 @@ class Controller {
   }
 
   getChatRoomEvents = async (req: Request, res: Response) => {
-    const chatRoomId = parseInt(req.params.chatRoomId)
+    const chatRoomId = req.params.chatRoomId
     const startAt = 0
 
     const events = await this.chatService.getChatRoomEvents(chatRoomId, startAt)

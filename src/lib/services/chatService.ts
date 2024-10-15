@@ -2,6 +2,7 @@
 
 import { AppDataSource } from "../dataSource"
 import { ChatRoom } from "../models/chatRoom"
+import { ChatRoomState } from "../models/chatRoomState"
 import {
   CreateFileMessageEvent,
   CreatePhotoMessageEvent,
@@ -20,7 +21,6 @@ import {
 import { RueJaiUser } from "../models/rueJaiUser"
 import { ChatRoomMemberRepository } from "../repositories/chatRoomMemberRepository"
 import { ChatRoomRepository } from "../repositories/chatRoomRepository"
-import { EventRepository } from "../repositories/eventRepository"
 import { RueJaiUserRepository } from "../repositories/rueJaiUserRepository"
 import { BroadcastingService } from "./broadcastingService"
 
@@ -28,23 +28,30 @@ class ChatService {
   private broadcastingService = new BroadcastingService()
 
   private chatRoomRepository = new ChatRoomRepository()
-  private eventRepository = new EventRepository()
   private rueJaiUserRepository = new RueJaiUserRepository()
   private chatRoomMemberRepository = new ChatRoomMemberRepository()
 
-  async getChatRooms(rueJaiUser: RueJaiUser): Promise<ChatRoom[]> {
-    return this.chatRoomRepository.getChatRoomsByUser(rueJaiUser)
+  async getChatRoomStates(rueJaiUser: RueJaiUser): Promise<ChatRoomState[]> {
+    const chatRoomStates = await this.chatRoomRepository.getChatRoomStatesByUser(rueJaiUser)
+
+    return chatRoomStates
   }
 
-  async getChatRoomLatestEventRecordInfo(chatRoomId: number): Promise<number> {
-    if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
-      throw new Error("Chat room not found")
+  async getChatRoomState(chatRoomId: string, rueJaiUser: RueJaiUser): Promise<ChatRoomState> {
+    if (
+      !(await this.chatRoomMemberRepository.isChatRoomMemberExist(
+        chatRoomId,
+        rueJaiUser.rueJaiUserId,
+        rueJaiUser.rueJaiUserType
+      ))
+    ) {
+      throw new Error("Unauthorized chat room access")
     }
 
-    return this.eventRepository.getLatestRoomAndMessageEventRecordNumber(chatRoomId)
+    return this.chatRoomRepository.getChatRoomState(chatRoomId)
   }
 
-  async getChatRoomMembers(chatRoomId: number) {
+  async getChatRoomMembers(chatRoomId: string) {
     if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
       throw new Error("Chat room not found")
     }
@@ -52,12 +59,12 @@ class ChatService {
     return this.chatRoomMemberRepository.getChatRoomMembers(chatRoomId)
   }
 
-  async getChatRoomEvents(chatRoomId: number, startAt: number) {
+  async getChatRoomEvents(chatRoomId: string, startAt: number) {
     if (!(await this.chatRoomRepository.isChatRoomExist(chatRoomId))) {
       throw new Error("Chat room not found")
     }
 
-    return this.eventRepository.getRoomAndMessageEvents(chatRoomId, startAt)
+    return this.chatRoomRepository.getRoomAndMessageEvents(chatRoomId, startAt)
   }
 
   async createChatRoom(event: CreateRoomEvent): Promise<ChatRoom> {
@@ -65,7 +72,7 @@ class ChatService {
     await queryRunner.startTransaction()
 
     const chatRoom = await this.chatRoomRepository.createChatRoom(event.name, event.thumbnailUrl)
-    await this.eventRepository.saveRoomAndMessageEvent(chatRoom.id, event)
+    await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoom.id, event)
 
     event.members.forEach(async (member) => {
       await this.chatRoomMemberRepository.createChatRoomMember(
@@ -82,7 +89,7 @@ class ChatService {
     return chatRoom
   }
 
-  async inviteMember(chatRoomId: number, event: InviteMemberEvent) {
+  async inviteMember(chatRoomId: string, event: InviteMemberEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -107,14 +114,14 @@ class ChatService {
       0
     )
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async updateMemberRole(chatRoomId: number, event: UpdateMemberRoleEvent) {
+  async updateMemberRole(chatRoomId: string, event: UpdateMemberRoleEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -128,14 +135,14 @@ class ChatService {
       throw new Error("Chatroom member not found")
     }
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async uninviteMember(chatRoomId: number, event: UninviteMemberEvent) {
+  async uninviteMember(chatRoomId: string, event: UninviteMemberEvent) {
     const { rueJaiUserId, rueJaiUserType } = event.uninvitedMember
 
     const queryRunner = AppDataSource.createQueryRunner()
@@ -147,14 +154,14 @@ class ChatService {
 
     await this.chatRoomMemberRepository.deleteChatRoomMember(chatRoomId, rueJaiUserId, rueJaiUserType)
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async createTextMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+  async createTextMessage(chatRoomId: string, event: CreateTextMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -162,14 +169,14 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async createTextReplyMessage(chatRoomId: number, event: CreateTextMessageEvent) {
+  async createTextReplyMessage(chatRoomId: string, event: CreateTextMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -177,14 +184,14 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async createPhotoMessage(chatRoomId: number, event: CreatePhotoMessageEvent) {
+  async createPhotoMessage(chatRoomId: string, event: CreatePhotoMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -192,14 +199,14 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async createVideoMessage(chatRoomId: number, event: CreateVideoMessageEvent) {
+  async createVideoMessage(chatRoomId: string, event: CreateVideoMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -207,14 +214,14 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async createFileMessage(chatRoomId: number, event: CreateFileMessageEvent) {
+  async createFileMessage(chatRoomId: string, event: CreateFileMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -222,14 +229,14 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async editTextMessage(chatRoomId: number, event: UpdateTextMessageEvent) {
+  async editTextMessage(chatRoomId: string, event: UpdateTextMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -237,14 +244,14 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async deleteMessage(chatRoomId: number, event: DeleteMessageEvent) {
+  async deleteMessage(chatRoomId: string, event: DeleteMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
@@ -252,14 +259,14 @@ class ChatService {
       throw new Error("Chat room not found")
     }
 
-    const recordedEvent = await this.eventRepository.saveRoomAndMessageEvent(chatRoomId, event)
+    const recordedEvent = await this.chatRoomRepository.saveRoomAndMessageEvent(chatRoomId, event)
 
     await queryRunner.commitTransaction()
 
     await this.broadcastingService.broadcastChatRoomEvent(chatRoomId, recordedEvent)
   }
 
-  async readMessage(chatRoomId: number, event: ReadMessageEvent) {
+  async readMessage(chatRoomId: string, event: ReadMessageEvent) {
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.startTransaction()
 
