@@ -84,7 +84,7 @@ class UpdateRoomEvent extends RoomEvent {
 }
 
 class InviteMemberEvent extends RoomEvent {
-  @Expose({ name: "member" })
+  @Expose({ name: "invited_member" })
   @IsInstance(EventChatRoomMember)
   @Type(() => EventChatRoomMember)
   readonly invitedMember: EventChatRoomMember
@@ -97,11 +97,12 @@ class InviteMemberEvent extends RoomEvent {
 }
 
 class UpdateMemberRoleEvent extends RoomEvent {
-  @Expose({ name: "updated_member_record_number" })
-  @IsNumber()
+  @Expose({ name: "updated_member" })
+  @IsInstance(EventChatRoomMember)
+  @Type(() => EventChatRoomMember)
   readonly updatedMember: EventChatRoomMember
 
-  @Expose({ name: "member_role" })
+  @Expose({ name: "new_role" })
   @IsEnum(ChatRoomMemberRole)
   readonly memberRole: ChatRoomMemberRole
 
@@ -120,8 +121,9 @@ class UpdateMemberRoleEvent extends RoomEvent {
 }
 
 class UninviteMemberEvent extends RoomEvent {
-  @Expose({ name: "uninvited_member_record_number" })
-  @IsNumber()
+  @Expose({ name: "uninvited_member" })
+  @IsInstance(EventChatRoomMember)
+  @Type(() => EventChatRoomMember)
   readonly uninvitedMember: EventChatRoomMember
 
   constructor(id: string, owner: Owner, createdAt: Date, uninvitedMember: EventChatRoomMember) {
